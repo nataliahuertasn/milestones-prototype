@@ -249,7 +249,7 @@ hr.soft{border:none; border-top:1px solid var(--rule); margin:34px 0}
 <section id="a">
   <div class="sec-head"><span class="sec-mark">A</span><h2 class="sec">Current architecture, as far as the interface reveals it</h2></div>
 
-  <p><span class="chip c-inf">Inferred</span> Project Agenda is a web application by Boston Project, LLC (footer: <em>Copyright © SIGMA 2026</em>). The UI is unambiguously <strong>Angular Material</strong>: <code>mat-tab-group</code> navigation, floating-label <code>mat-form-field</code> inputs with the underline treatment, the Material icon set (pencil, trash, eye, drag handle), and the standard raised primary button in Material blue. Any new dialog should be a <code>MatDialog</code> with the same field styling, and any new column a column in the existing table — not a new screen.</p>
+  <p><span class="chip c-inf">Inferred</span> Project Agenda is an internal web application. The UI is unambiguously <strong>Angular Material</strong>: <code>mat-tab-group</code> navigation, floating-label <code>mat-form-field</code> inputs with the underline treatment, the Material icon set (pencil, trash, eye, drag handle), and the standard raised primary button in Material blue. Any new dialog should be a <code>MatDialog</code> with the same field styling, and any new column a column in the existing table — not a new screen.</p>
 
   <h4>Navigation paths that matter here</h4>
   <div class="tw"><table>
@@ -258,7 +258,7 @@ hr.soft{border:none; border-top:1px solid var(--rule); margin:34px 0}
       <tr><td class="mono">Settings › Quotes › <strong>MILESTONES</strong></td><td>The <strong>Phase</strong> catalogue. Columns: drag-handle, <code>INDEX</code>, <code>NAME</code>, <code>DESCRIPTION</code>, <code>ACTIONS</code>. Rows: Kick Off, SD, CP, Material Procurement, Fabrication Drawings, Production, Installation Drawings, Shipping. Dialog has Name* + Description + Save. <em>This is where <code>WEIGHT (%)</code> is to be added</em> — your PDF marks the position in red, between DESCRIPTION and ACTIONS.</td></tr>
       <tr><td class="mono">Settings › Quotes › <strong>PRODUCT TYPES</strong></td><td>Catalogue with <code>NAME</code> + <code>DESCRIPTION</code> (Architectural Louver, Perforated Panel Screen, Solid Panel Screen…). <strong>My candidate for "Type of Scope"</strong> — see section D.</td></tr>
       <tr><td class="mono">Project › <strong>MILESTONES</strong></td><td>The view being reworked. Sits beside PROJECT DETAILS, QUOTES, TASKS, FOLLOW UP, STOCK, PURCHASES, OPERATIONS, BALANCE TO BILL FORECAST, INVOICES, TIME REPORTS, LOGS.</td></tr>
-      <tr><td class="mono">Project › <strong>QUOTES</strong></td><td>Quotes (e.g. <code>4436.11</code>) expand into line items: <code>ROW</code>, <code>COST</code> <em>(the description)</em>, <code>QTY</code>, <code>COST</code>, <code>MARGIN</code>, <code>GROSS MARGIN</code>, <code>PRICE PER QUANTITY</code>, <code>SALE PRICE</code>. <strong>These line items are the Scopes.</strong></td></tr>
+      <tr><td class="mono">Project › <strong>QUOTES</strong></td><td>Quotes expand into line items: <code>ROW</code>, <code>COST</code> <em>(the description)</em>, <code>QTY</code>, <code>COST</code>, <code>MARGIN</code>, <code>GROSS MARGIN</code>, <code>PRICE PER QUANTITY</code>, <code>SALE PRICE</code>. <strong>These line items are the Scopes.</strong></td></tr>
     </tbody>
   </table></div>
 
@@ -292,7 +292,7 @@ hr.soft{border:none; border-top:1px solid var(--rule); margin:34px 0}
 <span class="n">ProductType</span>  <span class="c">Settings › Quotes › PRODUCT TYPES — name + description</span>
 </div>
 
-  <p>The evidence for the <code>Milestone</code> shape is the edit dialog in your PDF, titled <em>“Scope VERTICAL FINS EAST TOWER 8' X 2': TWO FINS @ 30° – Material Procurement”</em> — scope name and phase name concatenated. It carries Milestone Date*, Percentage*, Files and Notes*. So <strong>a percentage already exists per cell today</strong>; the grid simply displays the date instead. That matters a great deal in section G.</p>
+  <p>The evidence for the <code>Milestone</code> shape is the edit dialog in your PDF, titled <em>“Scope ‹item name› – Material Procurement”</em> — scope name and phase name concatenated. It carries Milestone Date*, Percentage*, Files and Notes*. So <strong>a percentage already exists per cell today</strong>; the grid simply displays the date instead. That matters a great deal in section G.</p>
 </section>
 
 <!-- ============ C ============ -->
@@ -308,8 +308,8 @@ hr.soft{border:none; border-top:1px solid var(--rule); margin:34px 0}
 
   <div class="formula">
     <div class="fx">progress(scope) = Σ<sub>phases</sub> ( milestone.percentage × phase.weight ) ÷ Σ<sub>phases</sub> phase.weight</div>
-    <div class="check"><b>✓ ROW 8244</b><span>100·5 + 80·5 + 20·5 + 70·15 + 40·15 + 70·30 + 15·15 + 20·10 = 5175 ÷ 100 = <strong>51.75</strong> → mockup prints <strong>52%</strong></span></div>
-    <div class="check"><b>✓ ROW 7965</b><span>100·5 + 15·5 + 25·5 + 70·15 + 15·15 + 50·30 + 35·15 + 15·10 = 4150 ÷ 100 = <strong>41.5</strong> → mockup prints <strong>41%</strong></span></div>
+    <div class="check"><b>✓ ROW B</b><span>100·5 + 80·5 + 20·5 + 70·15 + 40·15 + 70·30 + 15·15 + 20·10 = 5175 ÷ 100 = <strong>51.75</strong> → mockup prints <strong>52%</strong></span></div>
+    <div class="check"><b>✓ ROW C</b><span>100·5 + 15·5 + 25·5 + 70·15 + 15·15 + 50·30 + 35·15 + 15·10 = 4150 ÷ 100 = <strong>41.5</strong> → mockup prints <strong>41%</strong></span></div>
   </div>
 
   <p>This is the single most valuable thing to come out of the reference material. It means <strong>Weight is not a new calculation — it is the exposure of a constant that is already baked into the code somewhere.</strong> A developer's first job is to find where those 5 / 5 / 5 / 15 / 15 / 30 / 15 / 10 figures currently live: a hard-coded array, a per-phase column that Settings simply does not render, or a formula that assumes equal weighting. Which one it is changes the migration entirely, and I cannot tell from outside.</p>
@@ -467,10 +467,10 @@ hr.soft{border:none; border-top:1px solid var(--rule); margin:34px 0}
   <h4>Milestones — populated</h4>
   <div class="mock">QUOTE          GROUP / SCOPE                      TYPE OF SCOPE    PRICE       KICK OFF 5%   SD 5%   …   PROGRESS
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-▾ 4436·7981    Curtain Wall                       Curtain Wall     122 170 195     100%        72%     …      67%
-    7981         VERTICAL FINS EAST TOWER…                          10 647 385     100%       100%     …     100%
-    8244         ALUMINUM FINS @ EAST BUILDING…                     90 917 123     100%        80%     …      52%
-▸ 4436         Windows                            Windows           45 220 000      80%        40%     …      38%</div>
+▾ 1002·1001    Curtain Wall                       Curtain Wall     122 170 195     100%        72%     …      67%
+    1001         VERTICAL FINS — NORTH TOWER                          10 647 385     100%       100%     …     100%
+    1001         ALUMINUM FINS — LEVEL 7                        90 917 123     100%        80%     …      52%
+▸ 1002         Windows                            Windows           45 220 000      80%        40%     …      38%</div>
   <p>Four notes on this. <strong>(i)</strong> The group's <code>QUOTE</code> cell lists every quote its scopes come from — a group can legitimately span quotes, and the July mockup does exactly this. <strong>(ii)</strong> Type of Scope appears on the group row only, blank on children, as you specified. <strong>(iii)</strong> Weights sit in the column headers next to the phase name — this is from the July mockup and it is a genuinely good idea: it makes the weighting visible at the point of use without another screen. <strong>(iv)</strong> Expand/collapse is the standard Material chevron with indented children — the same pattern the Project › Quotes tab already uses to expand a quote into its lines, so it is not a new interaction for anyone.</p>
 
   <h4>Create Group dialog</h4>
@@ -485,9 +485,9 @@ hr.soft{border:none; border-top:1px solid var(--rule); margin:34px 0}
    Scopes *                          ☐ Show scopes already in a group
    ┌────────────────────────────────────────────────┐
    │ 🔍 Filter                                      │
-   │ ☑ 7981 · VERTICAL FINS EAST TOWER 8' X 2'…     │
-   │ ☑ 8244 · ALUMINUM FINS @ EAST BUILDING 7TH FL  │
-   │ ☐ 7965 · FINS CEILING @ ELEVATOR LOBBY         │
+   │ ☑ 1001 · VERTICAL FINS — NORTH TOWER           │
+   │ ☑ 1001 · ALUMINUM FINS — LEVEL 7              │
+   │ ☐ 1001 · CEILING FINS — LOBBY                 │
    └────────────────────────────────────────────────┘
    3 of 18 scopes selected · 5 pending</div>
   <p>Same shell as the existing Milestone dialog in Settings (✕ title bar, floating-label fields, Save top-right). The scope list is <em>filterable but never restrictively filtered</em> per your §4 — the "already in a group" toggle is off by default, and choosing a scope that belongs elsewhere prompts to move it rather than silently failing (decision 2).</p>

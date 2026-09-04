@@ -403,7 +403,7 @@ body:not(.notes) .notepanel{display:none}
     <div class="main">
       <!-- ============ PROJECT VIEW ============ -->
       <div id="viewProject">
-        <div class="projbar"><span class="x">✕</span><h1>Mandarin Oriental Grand Cayman - ACS</h1></div>
+        <div class="projbar"><span class="x">✕</span><h1>Demo Project — Tower A</h1></div>
         <div class="tabs" id="projTabs">
           <button data-t="details">Project details</button>
           <button data-t="quotes">Quotes</button>
@@ -461,26 +461,26 @@ const TYPES = [
 ];
 let types;
 const SCOPES = [
-  {id:'s01',q:'4436',name:"VERTICAL FINS EAST TOWER 8' X 2': TWO FINS @ 30°",price:2282034849},
-  {id:'s02',q:'4436',name:"VERTICAL FINS WEST TOWER 8' X 2': TWO FINS @ 30°",price:1881988609},
-  {id:'s03',q:'4436',name:'ALUMINUM FINS @ EAST BUILDING 7TH FLOOR',price:51397579},
-  {id:'s04',q:'4436',name:'FINS CEILING @ ELEVATOR LOBBY',price:904831923},
-  {id:'s05',q:'4436',name:'ALUMINUM SLAB COVER @ ELEVATOR LOBBY',price:171948939},
-  {id:'s06',q:'4436',name:'HORIZONTAL SUNSHADE',price:474805787},
-  {id:'s07',q:'4436',name:'SLAB COVER BEHIND ALUMINUM FINS',price:1065483345},
-  {id:'s08',q:'4436',name:'PORTE COCHERE FINS',price:97118249},
-  {id:'s09',q:'4436',name:'CEILING PORTE COCHERE',price:495651583},
-  {id:'s10',q:'4436',name:'CLADDING AND COPING PORTE COCHERE',price:268346170},
-  {id:'s11',q:'4512',name:'CURTAIN WALL EAST TOWER LEVELS 2-14',price:3412900000},
-  {id:'s12',q:'4512',name:'CURTAIN WALL WEST TOWER LEVELS 2-14',price:3108450000},
-  {id:'s13',q:'4512',name:'STOREFRONT LOBBY GLAZING',price:612300000},
-  {id:'s14',q:'4512',name:'OPERABLE WINDOWS GUEST ROOMS',price:845120000},
-  {id:'s15',q:'4512',name:'SLIDING DOORS BALCONY TYPE A',price:397600000},
-  {id:'s16',q:'4512',name:'ENTRANCE DOORS MAIN LOBBY',price:158900000},
-  {id:'s17',q:'4512',name:'GLASS HANDRAIL POOL DECK',price:224750000},
-  {id:'s18',q:'4436',name:'STAINLESS STEEL FASTENERS AND ANCHORS',price:42180000},
-  {id:'s19',q:'4436',name:'AUXILIARY MATERIALS AND SEALANTS',price:28940000},
-  {id:'s20',q:'4512',name:'CURTAIN WALL MOCK-UP (CANCELLED)',price:-96400000},
+  {id:'s01',q:'1001',name:'VERTICAL FINS — NORTH TOWER',price:2300000000},
+  {id:'s02',q:'1001',name:'VERTICAL FINS — SOUTH TOWER',price:1900000000},
+  {id:'s03',q:'1001',name:'ALUMINUM FINS — LEVEL 7',price:50000000},
+  {id:'s04',q:'1001',name:'CEILING FINS — LOBBY',price:900000000},
+  {id:'s05',q:'1001',name:'SLAB COVER — LOBBY',price:170000000},
+  {id:'s06',q:'1001',name:'HORIZONTAL SUNSHADE',price:475000000},
+  {id:'s07',q:'1001',name:'SLAB COVER BEHIND FINS',price:1060000000},
+  {id:'s08',q:'1001',name:'CANOPY FINS',price:95000000},
+  {id:'s09',q:'1001',name:'CANOPY CEILING',price:495000000},
+  {id:'s10',q:'1001',name:'CANOPY CLADDING AND COPING',price:270000000},
+  {id:'s11',q:'1002',name:'CURTAIN WALL — NORTH TOWER L2-14',price:3400000000},
+  {id:'s12',q:'1002',name:'CURTAIN WALL — SOUTH TOWER L2-14',price:3100000000},
+  {id:'s13',q:'1002',name:'STOREFRONT GLAZING — LOBBY',price:600000000},
+  {id:'s14',q:'1002',name:'OPERABLE WINDOWS — TYPICAL FLOOR',price:850000000},
+  {id:'s15',q:'1002',name:'SLIDING DOORS — BALCONY TYPE A',price:400000000},
+  {id:'s16',q:'1002',name:'ENTRANCE DOORS — MAIN LOBBY',price:160000000},
+  {id:'s17',q:'1002',name:'GLASS HANDRAIL — TERRACE',price:225000000},
+  {id:'s18',q:'1001',name:'FASTENERS AND ANCHORS',price:40000000},
+  {id:'s19',q:'1001',name:'AUXILIARY MATERIALS AND SEALANTS',price:30000000},
+  {id:'s20',q:'1002',name:'CURTAIN WALL MOCK-UP (CANCELLED)',price:-95000000},
 ];
 
 /* -------------------------------------------------------------------------
@@ -529,7 +529,7 @@ function seed(){
     {id:'g0',name:'Handrails',typeId:'t7',scopeIds:['s17','s05','s06'],open:false},
     {id:'g1',name:'Aluminum Fins',typeId:'t1',scopeIds:['s01','s02','s03','s04'],open:false},
     {id:'g2',name:'Curtain Wall',typeId:'t4',scopeIds:['s11','s12','s13'],open:false},
-    {id:'g3',name:'Porte Cochere',typeId:'t3',scopeIds:['s08','s09','s10'],open:false},
+    {id:'g3',name:'Canopy',typeId:'t3',scopeIds:['s08','s09','s10'],open:false},
   ];
   seq = 4;
   ms = {};   // sin ningún avance: el usuario es quien los ingresa
