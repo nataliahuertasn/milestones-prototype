@@ -1,0 +1,1227 @@
+<title>Milestone Groups Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap">
+
+<style>
+/* ============================================================
+   Maqueta navegable · Project Agenda — Milestones Groups
+   Paleta y componentes replicados de las capturas del sistema.
+   Tema claro único: la aplicación real es solo clara.
+   ============================================================ */
+:root{
+  --blue:#1976D2; --blue-d:#1565C0; --blue-l:#2196F3; --blue-pale:#E3F2FD;
+  --bg:#FAFAFA; --paper:#FFFFFF; --band:#EEEEEE; --band-2:#F5F5F5;
+  --line:#E0E0E0; --line-2:#D6D6D6;
+  --ink:#212121; --ink-2:#5F6368; --ink-3:#9E9E9E;
+  --green:#2E7D32; --green-i:#43A047; --red:#D32F2F;
+  --amber-bg:#FFF8E1; --amber-line:#FFE082; --amber-ink:#B26500; --amber-i:#FFA726;
+  --tile-b:#42A5F5; --tile-a:#FFA726; --tile-g:#43A047; --tile-o:#F4692F;
+  --sh1:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+  --sh2:0 3px 6px rgba(0,0,0,.13),0 3px 6px rgba(0,0,0,.10);
+  --sh3:0 11px 15px -7px rgba(0,0,0,.2),0 24px 38px 3px rgba(0,0,0,.14);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:Roboto,"Helvetica Neue",Arial,sans-serif; font-size:14px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--blue); outline-offset:1px}
+
+/* ---------- app shell ---------- */
+.app{display:flex; flex-direction:column; min-height:100vh}
+.topbar{
+  display:flex; align-items:center; gap:20px; height:60px; padding:0 22px;
+  background:var(--paper); border-bottom:1px solid var(--line); flex:none;
+}
+.logo{display:flex; align-items:center; gap:8px; font-weight:700; font-size:19px; letter-spacing:-.02em; color:#0E2233}
+.logo .mk{width:22px;height:22px;background:#0E2233;transform:skewX(-12deg);border-radius:2px;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700}
+.search{
+  margin-left:auto; display:flex; align-items:center; gap:9px; width:min(300px,32vw);
+  border:1px solid var(--line); border-radius:22px; padding:7px 15px; color:var(--ink-3); font-size:13.5px;
+}
+.bell{position:relative; color:var(--ink-2)}
+.bell .badge{
+  position:absolute; top:-5px; right:-9px; background:#E53935; color:#fff;
+  font-size:9.5px; font-weight:700; border-radius:9px; padding:1px 5px;
+}
+.avatar{width:26px;height:26px;border-radius:50%;border:1.6px solid var(--ink-2);display:grid;place-items:center;color:var(--ink-2);font-size:13px}
+
+.body{display:flex; flex:1; min-height:0}
+.rail{
+  width:52px; flex:none; background:var(--paper); border-right:1px solid var(--line);
+  display:flex; flex-direction:column; align-items:center; padding:14px 0; gap:4px;
+}
+.rail button{
+  width:38px;height:38px;border:none;background:none;border-radius:6px;cursor:pointer;
+  color:#90A4AE; display:grid; place-items:center; position:relative;
+}
+.rail button:hover{background:var(--band-2)}
+.rail button.on{color:var(--blue); background:var(--blue-pale)}
+.rail .dot{position:absolute;top:4px;right:4px;background:#E53935;color:#fff;font-size:9px;border-radius:8px;padding:0 4px;font-weight:700}
+.main{flex:1; min-width:0; display:flex; flex-direction:column}
+
+/* ---------- tabs (mat-tab-group) ---------- */
+.tabs{
+  display:flex; align-items:stretch; background:var(--band); border-bottom:1px solid var(--line);
+  overflow-x:auto; flex:none; scrollbar-width:thin;
+}
+.tabs button{
+  border:none; background:none; cursor:pointer; white-space:nowrap;
+  padding:15px 18px; font-size:12.5px; font-weight:500; letter-spacing:.055em;
+  text-transform:uppercase; color:var(--ink-2); position:relative;
+}
+.tabs button:hover{color:var(--ink); background:rgba(0,0,0,.03)}
+.tabs button.on{color:var(--blue-l); background:var(--paper)}
+.tabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--blue-l)}
+.tabs .arrow{color:var(--ink-3); padding:15px 10px}
+
+.projbar{display:flex;align-items:center;gap:12px;padding:14px 22px 12px;background:var(--paper)}
+.projbar .x{color:var(--ink-2);font-size:17px;cursor:pointer;line-height:1}
+.projbar h1{margin:0;font-size:17px;font-weight:400;letter-spacing:-.01em}
+
+.canvas{flex:1; padding:18px 22px 60px; overflow:auto}
+
+/* ---------- KPI tiles ---------- */
+.tiles{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.tile{
+  background:var(--paper);border:1px solid var(--line);border-radius:4px;box-shadow:var(--sh1);
+  padding:12px 20px 12px 12px;display:flex;align-items:center;gap:13px;min-width:172px;
+}
+.tile .ic{width:38px;height:38px;border-radius:4px;display:grid;place-items:center;color:#fff;font-size:19px;flex:none}
+.tile .lb{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);line-height:1.4}
+.tile .vl{font-size:21px;font-weight:400;line-height:1.15;font-variant-numeric:tabular-nums}
+
+/* ---------- alert ---------- */
+.alert{
+  display:flex;align-items:center;gap:12px;background:var(--amber-bg);
+  border:1px solid var(--amber-line);border-left:4px solid var(--amber-i);
+  border-radius:4px;padding:11px 16px;margin-bottom:16px;font-size:13.5px;color:#6D4C00;
+}
+.alert .ai{color:var(--amber-i);font-size:18px;line-height:1}
+.alert b{font-weight:500;color:#5D4200}
+.alert .sp{flex:1}
+.alert button{
+  border:none;background:none;color:var(--amber-ink);font-weight:500;font-size:12.5px;
+  letter-spacing:.06em;text-transform:uppercase;cursor:pointer;padding:6px 10px;border-radius:4px;
+}
+.alert button:hover{background:rgba(178,101,0,.09)}
+
+/* ---------- toolbar ---------- */
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.toolbar .sp{flex:1}
+.btn{
+  border:none;border-radius:4px;cursor:pointer;font-size:13px;font-weight:500;
+  letter-spacing:.05em;text-transform:uppercase;padding:9px 17px;display:inline-flex;
+  align-items:center;gap:7px;
+}
+.btn.pri{background:var(--blue);color:#fff;box-shadow:var(--sh1)}
+.btn.pri:hover{background:var(--blue-d);box-shadow:var(--sh2)}
+.btn.pri:disabled{background:#E0E0E0;color:#9E9E9E;box-shadow:none;cursor:not-allowed}
+.btn.flat{background:none;color:var(--blue);padding:9px 13px}
+.btn.flat:hover{background:var(--blue-pale)}
+.btn.gh{background:var(--paper);color:var(--ink-2);border:1px solid var(--line)}
+.btn.gh:hover{background:var(--band-2)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--paper)}
+.seg button{
+  border:none;background:none;cursor:pointer;padding:7px 13px;font-size:11.5px;font-weight:500;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2);
+}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--blue-pale);color:var(--blue-d)}
+
+/* ---------- data table ---------- */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:4px;box-shadow:var(--sh1);overflow:hidden}
+.tscroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+thead th{
+  text-align:left;font-size:10.5px;font-weight:500;letter-spacing:.075em;text-transform:uppercase;
+  color:var(--ink-2);padding:12px 12px 10px;background:var(--paper);
+  border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:bottom;
+}
+thead th.ph{
+  text-align:center;width:86px;min-width:86px;max-width:86px;
+  padding-left:4px;padding-right:4px;white-space:normal;line-height:1.3;
+}
+thead th .wg{
+  display:block;font-size:10px;color:var(--blue);font-weight:500;
+  font-family:"Roboto Mono",monospace;letter-spacing:.02em;margin-top:2px;
+}
+tbody td{padding:0 12px;border-bottom:1px solid var(--line);height:52px;vertical-align:middle}
+tbody tr.grp{background:var(--band-2)}
+tbody tr.grp:hover{background:#EDEFF1}
+tbody tr.sc:hover{background:#FAFBFC}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.ctr{text-align:center}
+.qcell{font-variant-numeric:tabular-nums;color:var(--ink-2);white-space:nowrap;font-size:12.5px}
+.gname{display:flex;align-items:center;gap:6px;font-weight:500}
+.chev{
+  border:none;background:none;cursor:pointer;color:var(--ink-2);width:24px;height:24px;
+  border-radius:50%;display:grid;place-items:center;font-size:15px;line-height:1;flex:none;color:#546E7A;
+}
+.chev:hover{background:rgba(0,0,0,.07)}
+.scname{padding-left:34px;color:var(--ink-2)}
+.tychip{
+  display:inline-block;font-size:11.5px;padding:3px 9px;border-radius:11px;
+  background:var(--blue-pale);color:var(--blue-d);white-space:nowrap;
+}
+.cell{
+  border:none;background:none;cursor:pointer;width:100%;height:44px;border-radius:3px;
+  font-family:inherit;font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.25;
+}
+.cell:hover{background:var(--blue-pale)}
+.cell.empty{color:#BDBDBD;font-size:17px;font-weight:300}
+.cell .dt{font-size:12.5px;font-family:"Roboto Mono",monospace;line-height:1.25}
+.ok{color:var(--green)} .late{color:var(--red)}
+.prog{font-weight:500;font-variant-numeric:tabular-nums}
+.bar{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:3px}
+.bar i{display:block;height:100%;background:var(--blue-l)}
+.rowact{border:none;background:none;cursor:pointer;color:var(--ink-3);padding:5px 7px;border-radius:50%;font-size:14px}
+.rowact:hover{background:rgba(0,0,0,.07);color:var(--ink-2)}
+.excl{opacity:.5}
+.excl .prog{color:var(--ink-3)}
+
+/* ---------- empty state ---------- */
+.empty{padding:64px 24px;text-align:center}
+.empty .il{font-size:44px;color:#CFD8DC;margin-bottom:10px}
+.empty h3{margin:0 0 6px;font-size:17px;font-weight:400;color:var(--ink-2)}
+.empty p{margin:0 0 22px;color:var(--ink-3);font-size:13.5px}
+
+/* ---------- settings pane ---------- */
+.setwrap{display:flex;flex:1;min-height:0}
+.setnav{width:250px;flex:none;background:var(--paper);border-right:1px solid var(--line);overflow:auto;padding:8px 0}
+.setnav .it{padding:13px 20px;border-bottom:1px solid #F0F0F0;cursor:pointer}
+.setnav .it.on{background:#E8F0FE}
+.setnav .it .t{font-size:14px;color:var(--ink)}
+.setnav .it.on .t{color:var(--blue-l)}
+.setnav .it .s{display:flex;align-items:center;gap:7px;color:var(--ink-2);font-size:12.5px;margin-top:3px}
+.setnav .it.on .s{color:var(--blue)}
+.sethead{
+  display:flex;align-items:center;gap:16px;background:var(--band);
+  padding:16px 20px;border-bottom:1px solid var(--line);
+}
+.sethead h2{margin:0;font-size:19px;font-weight:500;letter-spacing:.01em}
+.wt{
+  width:78px;text-align:right;font-family:"Roboto Mono",monospace;font-size:13px;
+  border:none;border-bottom:1px solid var(--line);padding:5px 2px;background:none;
+  font-variant-numeric:tabular-nums;color:var(--ink);
+}
+.wt:focus{border-bottom:2px solid var(--blue);outline:none;padding-bottom:4px}
+.wt.bad{border-bottom-color:var(--red);color:var(--red)}
+.totrow td{background:var(--band-2);font-weight:500;height:50px}
+.totpill{
+  display:inline-flex;align-items:center;gap:7px;padding:4px 11px;border-radius:13px;
+  font-family:"Roboto Mono",monospace;font-size:12.5px;font-variant-numeric:tabular-nums;
+}
+.totpill.good{background:#E8F5E9;color:var(--green)}
+.totpill.warn{background:var(--amber-bg);color:var(--amber-ink);border:1px solid var(--amber-line)}
+.dragh{color:#BDBDBD;cursor:grab;font-size:15px}
+
+/* ---------- dialog ---------- */
+.scrim{
+  position:fixed;inset:0;background:rgba(0,0,0,.34);display:none;
+  align-items:flex-start;justify-content:center;padding:44px 16px;z-index:50;overflow:auto;
+}
+.scrim.on{display:flex}
+.dlg{
+  background:var(--paper);border-radius:4px;box-shadow:var(--sh3);width:100%;max-width:560px;
+  animation:pop .16s ease-out;
+}
+.dlg.wide{max-width:660px}
+@keyframes pop{from{opacity:0;transform:translateY(-10px) scale(.985)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.dlg{animation:none}}
+.dlg header{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.dlg header .x{border:none;background:none;cursor:pointer;color:var(--blue-l);font-size:17px;line-height:1;padding:3px}
+.dlg header h3{margin:0;font-size:16px;font-weight:500;flex:1;letter-spacing:-.005em}
+.dlg .bd{padding:22px 24px 24px}
+.dlg footer{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
+
+.fld{margin-bottom:24px}
+.fld label{display:block;font-size:11.5px;color:var(--ink-2);margin-bottom:3px}
+.fld label .rq{color:var(--red)}
+.fld input[type=text],.fld input[type=date],.fld input[type=number],.fld select,.fld textarea{
+  width:100%;border:none;border-bottom:1px solid var(--line-2);background:none;
+  font-family:inherit;font-size:14.5px;color:var(--ink);padding:5px 0 6px;
+}
+.fld select{cursor:pointer}
+.fld textarea{resize:vertical;min-height:52px;border:1px solid var(--line-2);border-radius:4px;padding:8px 10px;font-size:13.5px}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-bottom:2px solid var(--blue);padding-bottom:5px}
+.fld textarea:focus{border:2px solid var(--blue);padding:7px 9px}
+.hint{font-size:11.5px;color:var(--ink-3);margin-top:5px}
+.err{font-size:11.5px;color:var(--red);margin-top:5px;display:none}
+.err.on{display:block}
+.row2{display:flex;gap:20px}
+.row2>*{flex:1}
+
+.picker{border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.picker .pf{display:flex;align-items:center;gap:9px;padding:9px 12px;border-bottom:1px solid var(--line);background:var(--band-2)}
+.picker .pf input{border:none;background:none;flex:1;font-family:inherit;font-size:13.5px;outline:none}
+.picker .lst{max-height:250px;overflow:auto}
+.pitem{display:flex;align-items:center;gap:11px;padding:9px 13px;border-bottom:1px solid #F2F2F2;cursor:pointer;font-size:13px}
+.pitem:hover{background:var(--band-2)}
+.pitem:last-child{border-bottom:none}
+.pitem input{accent-color:var(--blue);width:16px;height:16px;flex:none;cursor:pointer}
+.pitem .q{font-family:"Roboto Mono",monospace;font-size:11.5px;color:var(--ink-3);flex:none;width:38px}
+.pitem .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pitem .p{font-variant-numeric:tabular-nums;color:var(--ink-3);font-size:11.5px;flex:none}
+.pitem .tag{font-size:10px;background:var(--band);color:var(--ink-2);padding:1px 6px;border-radius:9px;flex:none}
+.pfoot{display:flex;align-items:center;gap:14px;padding:9px 13px;background:var(--band-2);border-top:1px solid var(--line);font-size:12px;color:var(--ink-2)}
+.pfoot .sp{flex:1}
+.sw{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2);cursor:pointer;user-select:none}
+.sw input{accent-color:var(--blue)}
+
+.chiplist{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.gchip{
+  display:inline-flex;align-items:center;gap:7px;background:var(--band);border-radius:14px;
+  padding:4px 6px 4px 11px;font-size:12.5px;
+}
+.gchip button{border:none;background:none;cursor:pointer;color:var(--ink-3);font-size:13px;line-height:1;padding:2px 3px;border-radius:50%}
+.gchip button:hover{background:rgba(0,0,0,.1);color:var(--ink)}
+
+/* ---------- spec notes ---------- */
+.pin{
+  display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;
+  background:var(--blue);color:#fff;font-size:9.5px;font-weight:700;
+  font-family:"Roboto Mono",monospace;cursor:help;vertical-align:super;margin-left:4px;flex:none;
+}
+body:not(.notes) .pin{display:none}
+.notepanel{
+  margin-top:22px;background:#0E2233;color:#C8D6E2;border-radius:4px;padding:20px 24px;
+  font-size:13px;line-height:1.65;
+}
+body:not(.notes) .notepanel{display:none}
+.notepanel h4{margin:0 0 12px;font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:#7FA8CC;font-weight:500}
+.notepanel ol{margin:0;padding-left:22px}
+.notepanel li{margin-bottom:9px}
+.notepanel li::marker{color:#5B8FBF;font-family:"Roboto Mono",monospace;font-size:11px}
+.notepanel b{color:#EAF2F8;font-weight:500}
+.notepanel code{background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px;font-family:"Roboto Mono",monospace;font-size:11.5px}
+
+.demobar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#0E2233;color:#B9CBDA;
+  padding:8px 22px;font-size:12px;flex:none;
+}
+.demobar .tt{font-weight:500;color:#fff;letter-spacing:.04em;text-transform:uppercase;font-size:10.5px}
+.demobar .sp{flex:1}
+.demobar button{
+  border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#DCE7F0;
+  border-radius:3px;padding:4px 10px;font-size:11.5px;cursor:pointer;letter-spacing:.03em;
+}
+.demobar button:hover{background:rgba(255,255,255,.14)}
+.demobar button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* ---------- anchored menu (mat-menu) ---------- */
+/* ---------- E&D budget: icono + popover ---------- */
+.edbtn{
+  border:none;background:none;cursor:pointer;color:#7B8794;padding:5px;border-radius:50%;
+  display:inline-grid;place-items:center;line-height:0;
+}
+.edbtn:hover,.edbtn.on{background:var(--blue-pale);color:var(--blue)}
+.ednone{color:#CFD8DC}
+.pop{
+  position:fixed;z-index:80;background:var(--paper);border-radius:4px;box-shadow:var(--sh3);
+  padding:14px 16px 12px;min-width:308px;border:1px solid var(--line);
+}
+.pop h5{
+  margin:0 0 2px;font-size:12px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2);
+}
+.pop .sub{font-size:11.5px;color:var(--ink-3);margin:0 0 10px;max-width:270px}
+.pop table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:0}
+.pop th{
+  padding:0 0 5px;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);
+  background:none;border-bottom:1px solid var(--line);white-space:nowrap;font-weight:500;
+}
+.pop th.r,.pop td.r{text-align:right}
+.pop td{
+  padding:7px 0;border-bottom:1px solid #F2F2F2;height:auto;color:var(--ink);
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.pop td.lb{color:var(--ink-2);padding-right:14px;white-space:normal}
+.pop td.u{color:var(--ink-3);font-size:11.5px;text-align:center}
+.pop tr.tot td{border-bottom:none;font-weight:500;padding-top:9px}
+.pop tr.tot td.lb{color:var(--ink);text-transform:uppercase;font-size:10.5px;letter-spacing:.07em}
+.menu{
+  position:fixed;background:var(--paper);border-radius:4px;box-shadow:var(--sh3);
+  min-width:212px;padding:6px 0;z-index:70;
+}
+.menu button{
+  display:flex;align-items:center;gap:13px;width:100%;border:none;background:none;
+  cursor:pointer;padding:11px 18px;font-size:14px;color:var(--ink);text-align:left;
+}
+.menu button:hover{background:var(--band-2)}
+.menu button .mi{width:20px;flex:none;color:var(--ink-2);font-size:14px}
+.menu button.danger,.menu button.danger .mi{color:var(--red)}
+.menu hr{border:none;border-top:1px solid var(--line);margin:6px 0}
+.menu .hd{padding:8px 18px 6px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+
+.askbody{font-size:14px;color:var(--ink-2);line-height:1.6}
+.askbody b{color:var(--ink);font-weight:500}
+.askbody ul{margin:12px 0 0;padding-left:20px;font-size:13.5px}
+.askbody li{margin-bottom:5px}
+
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#323232;color:#fff;
+  padding:12px 20px;border-radius:4px;font-size:13.5px;box-shadow:var(--sh2);z-index:80;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.toast.on{opacity:1}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+
+<div class="app">
+
+  <div class="demobar">
+    <span class="tt">Maqueta</span>
+    <span>Datos ficticios — ninguna acción persiste</span>
+    <span class="sp"></span>
+    <button id="tNotes">Notas de spec</button>
+    <button id="tCell">Celda: %</button>
+    <button id="tReset">Reiniciar datos</button>
+    <button id="tEmpty">Ver estado vacío</button>
+  </div>
+
+  <div class="topbar">
+    <div class="search"><span>🔍</span><span>Search</span></div>
+    <div class="bell">🔔<span class="badge">138</span></div>
+    <div class="avatar">👤</div>
+  </div>
+
+  <div class="body">
+    <nav class="rail">
+      <button title="Clients">👥</button>
+      <button title="Contacts">🗂</button>
+      <button title="Vendors">🧾</button>
+      <button title="Operations">🛠<span class="dot">21</span></button>
+      <button id="navProj" class="on" title="Projects">▤</button>
+      <button id="navSet" title="Settings">⚙</button>
+    </nav>
+
+    <div class="main">
+      <!-- ============ PROJECT VIEW ============ -->
+      <div id="viewProject">
+        <div class="projbar"><span class="x">✕</span><h1>Mandarin Oriental Grand Cayman - ACS</h1></div>
+        <div class="tabs" id="projTabs">
+          <button data-t="details">Project details</button>
+          <button data-t="quotes">Quotes</button>
+          <button data-t="ms" class="on">Milestones</button>
+          <button data-t="x">Tasks</button><button data-t="x">Follow up</button>
+          <button data-t="x">Stock</button><button data-t="x">Purchases</button>
+          <button data-t="x">Operations</button><button data-t="x">Balance to bill forecast</button>
+          <button data-t="x">Invoices</button><button data-t="x">Time reports</button><button data-t="x">Logs</button>
+        </div>
+        <div class="canvas" id="projCanvas"></div>
+      </div>
+
+      <!-- ============ SETTINGS VIEW ============ -->
+      <div id="viewSettings" hidden>
+        <div class="tabs" id="setTabs">
+          <button data-t="phases" class="on">Milestones</button>
+          <button data-t="types">Product types</button>
+        </div>
+        <div class="setwrap">
+          <aside class="setnav">
+            <div class="it on"><div class="t">Quotes</div><div class="s">⚙ Settings</div></div>
+          </aside>
+          <div class="canvas" id="setCanvas" style="background:var(--bg)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"><div id="dlgHost"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================================
+   ESTADO
+   ========================================================================= */
+const PHASES = [
+  {id:'ko',name:'Kick Off',desc:'',weight:5},
+  {id:'sd',name:'SD',desc:'Schematic design',weight:5},
+  {id:'cp',name:'CP',desc:'Construction permit',weight:5},
+  {id:'mp',name:'Material Procurement',desc:'',weight:15},
+  {id:'fd',name:'Fabrication Drawings',desc:'',weight:15},
+  {id:'pr',name:'Production',desc:'',weight:30},
+  {id:'idw',name:'Installation Drawings',desc:'',weight:15},
+  {id:'sh',name:'Shipping',desc:'',weight:10},
+];
+const TYPES = [
+  {id:'t1',name:'Architectural Louver',desc:'Aluminum architectural louvers · Blades (COMP-###)'},
+  {id:'t2',name:'Perforated Panel Screen',desc:'Aluminum perforated panels made of (AA#### H##)'},
+  {id:'t3',name:'Solid Panel Screen',desc:'Aluminum panels made of (AA#### H##)'},
+  {id:'t4',name:'Curtain Wall',desc:'Unitized and stick-built curtain wall systems'},
+  {id:'t5',name:'Windows',desc:'Fixed and operable window systems'},
+  {id:'t6',name:'Doors',desc:'Entrance, sliding and balcony door systems'},
+  {id:'t7',name:'Handrails',desc:'Glass and metal handrail systems'},
+];
+let types;
+const SCOPES = [
+  {id:'s01',q:'4436',name:"VERTICAL FINS EAST TOWER 8' X 2': TWO FINS @ 30°",price:2282034849},
+  {id:'s02',q:'4436',name:"VERTICAL FINS WEST TOWER 8' X 2': TWO FINS @ 30°",price:1881988609},
+  {id:'s03',q:'4436',name:'ALUMINUM FINS @ EAST BUILDING 7TH FLOOR',price:51397579},
+  {id:'s04',q:'4436',name:'FINS CEILING @ ELEVATOR LOBBY',price:904831923},
+  {id:'s05',q:'4436',name:'ALUMINUM SLAB COVER @ ELEVATOR LOBBY',price:171948939},
+  {id:'s06',q:'4436',name:'HORIZONTAL SUNSHADE',price:474805787},
+  {id:'s07',q:'4436',name:'SLAB COVER BEHIND ALUMINUM FINS',price:1065483345},
+  {id:'s08',q:'4436',name:'PORTE COCHERE FINS',price:97118249},
+  {id:'s09',q:'4436',name:'CEILING PORTE COCHERE',price:495651583},
+  {id:'s10',q:'4436',name:'CLADDING AND COPING PORTE COCHERE',price:268346170},
+  {id:'s11',q:'4512',name:'CURTAIN WALL EAST TOWER LEVELS 2-14',price:3412900000},
+  {id:'s12',q:'4512',name:'CURTAIN WALL WEST TOWER LEVELS 2-14',price:3108450000},
+  {id:'s13',q:'4512',name:'STOREFRONT LOBBY GLAZING',price:612300000},
+  {id:'s14',q:'4512',name:'OPERABLE WINDOWS GUEST ROOMS',price:845120000},
+  {id:'s15',q:'4512',name:'SLIDING DOORS BALCONY TYPE A',price:397600000},
+  {id:'s16',q:'4512',name:'ENTRANCE DOORS MAIN LOBBY',price:158900000},
+  {id:'s17',q:'4512',name:'GLASS HANDRAIL POOL DECK',price:224750000},
+  {id:'s18',q:'4436',name:'STAINLESS STEEL FASTENERS AND ANCHORS',price:42180000},
+  {id:'s19',q:'4436',name:'AUXILIARY MATERIALS AND SEALANTS',price:28940000},
+  {id:'s20',q:'4512',name:'CURTAIN WALL MOCK-UP (CANCELLED)',price:-96400000},
+];
+
+/* -------------------------------------------------------------------------
+   ENGINEERING & DESIGN — presupuesto por item
+   Las tres secciones vienen del detalle de costos de la quote. En la maqueta
+   las cantidades son supuestas y se derivan del precio del item para que el
+   consolidado del scope sea coherente con la suma de sus partes.
+   ------------------------------------------------------------------------- */
+const ED_SECTIONS = [
+  {key:'calc',   name:'Calculations',    unit:'hr', rate:120000},
+  {key:'design', name:'Design',          unit:'hr', rate: 95000},
+  {key:'pm',     name:'Project Manager', unit:'hr', rate:150000},
+];
+const ED_FACTOR = {calc:1.2, design:2.0, pm:0.9};
+const ED_BASE   = {calc:4,   design:8,   pm:6};
+
+function edForItem(sid){
+  const s = scope(sid);
+  if(!s || s.price<=0) return null;                 // items cancelados: sin presupuesto
+  const base = s.price/1e8;
+  return ED_SECTIONS.map(sec=>{
+    const qty = Math.round(ED_BASE[sec.key] + base*ED_FACTOR[sec.key]);
+    return {name:sec.name, unit:sec.unit, qty, total:qty*sec.rate};
+  });
+}
+function edForScope(g){
+  const rows = ED_SECTIONS.map(sec=>({name:sec.name, unit:sec.unit, qty:0, total:0}));
+  let any = false;
+  g.scopeIds.forEach(sid=>{
+    const r = edForItem(sid); if(!r) return;
+    any = true;
+    r.forEach((x,i)=>{ rows[i].qty += x.qty; rows[i].total += x.total; });
+  });
+  return any ? rows : null;
+}
+const edTotal = rows => rows ? rows.reduce((a,r)=>a+r.total,0) : 0;
+
+let phases, groups, ms, seq;
+
+function seed(){
+  phases = PHASES.map(p=>({...p}));
+  types  = TYPES.map(t=>({...t}));
+  // Los scopes de Milestones se muestran recogidos: sólo el consolidado, como un group de Excel.
+  groups = [
+    // Todos abren sin avances: cada celda muestra "+" hasta que el usuario la diligencia
+    {id:'g0',name:'Handrails',typeId:'t7',scopeIds:['s17','s05','s06'],open:false},
+    {id:'g1',name:'Aluminum Fins',typeId:'t1',scopeIds:['s01','s02','s03','s04'],open:false},
+    {id:'g2',name:'Curtain Wall',typeId:'t4',scopeIds:['s11','s12','s13'],open:false},
+    {id:'g3',name:'Porte Cochere',typeId:'t3',scopeIds:['s08','s09','s10'],open:false},
+  ];
+  seq = 4;
+  ms = {};   // sin ningún avance: el usuario es quien los ingresa
+}
+seed();
+
+/* =========================================================================
+   CÁLCULO  —  fórmulas recuperadas de los mockups de julio
+   ========================================================================= */
+const totalWeight = () => phases.reduce((a,p)=>a+(+p.weight||0),0);
+
+// progress(scope) = Σ(pct × weight) ÷ Σ(weight)
+function scopeProgress(sid){
+  const tw = totalWeight(); if(!tw) return 0;
+  let acc=0;
+  phases.forEach(p=>{ const m=ms[sid+'|'+p.id]; if(m) acc += m.pct*(+p.weight||0); });
+  return acc/tw;
+}
+// group.phase% = Σ(pct × price) ÷ Σ(price)   — sólo scopes con price > 0 (Decisión 4)
+// Devuelve null mientras NINGÚN item del scope haya reportado esa fase: la celda
+// se dibuja como "+" igual que hoy, para que el avance lo diligencie el usuario.
+function groupPhasePct(g,phId){
+  let num=0,den=0,any=false;
+  g.scopeIds.forEach(sid=>{
+    const s = scope(sid); if(!s || s.price<=0) return;
+    const m = ms[sid+'|'+phId];
+    if(m) any = true;
+    num += (m?m.pct:0)*s.price; den += s.price;
+  });
+  return (any && den) ? num/den : null;
+}
+function groupProgress(g){
+  const tw=totalWeight(); if(!tw) return 0;
+  let acc=0;
+  phases.forEach(p=>{ const v=groupPhasePct(g,p.id); if(v!=null) acc += v*(+p.weight||0); });
+  return acc/tw;
+}
+const groupPrice = g => g.scopeIds.reduce((a,sid)=>a+(scope(sid)?.price||0),0);
+const scope = id => SCOPES.find(s=>s.id===id);
+const assignedIds = () => new Set(groups.flatMap(g=>g.scopeIds));
+const pendingScopes = () => { const a=assignedIds(); return SCOPES.filter(s=>!a.has(s.id)); };
+const groupOf = sid => groups.find(g=>g.scopeIds.includes(sid));
+const typeName = id => types.find(t=>t.id===id)?.name || '';
+
+function projectProgress(){
+  let num=0,den=0;
+  groups.forEach(g=>g.scopeIds.forEach(sid=>{
+    const s=scope(sid); if(!s||s.price<=0) return;
+    num += scopeProgress(sid)*s.price; den += s.price;
+  }));
+  return den ? num/den : 0;
+}
+
+/* =========================================================================
+   UTILIDADES
+   ========================================================================= */
+const money = n => (n<0?'-':'') + Math.abs(Math.round(n)).toLocaleString('de-DE');
+const pctTxt = v => (v==null?'':Math.round(v)+'%');
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let cellMode='pct', showEmpty=false;
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._x); t._x=setTimeout(()=>t.classList.remove('on'),2200);
+}
+
+/* =========================================================================
+   VISTA · MILESTONES DEL PROYECTO
+   ========================================================================= */
+function renderProject(){
+  const c = document.getElementById('projCanvas');
+  const gs = showEmpty ? [] : groups;
+  const pend = showEmpty ? SCOPES : pendingScopes();
+  const shown = gs.flatMap(g=>g.scopeIds);
+  const msCount = shown.reduce((a,sid)=>a+phases.filter(p=>ms[sid+'|'+p.id]).length,0);
+  const done = shown.reduce((a,sid)=>a+phases.filter(p=>ms[sid+'|'+p.id]?.pct>=100).length,0);
+
+  let h = '';
+
+  /* alerta de pendientes */
+  if(pend.length){
+    h += `<div class="alert">
+      <span class="ai">⚠</span>
+      <span>There are <b>${pend.length} item${pend.length!==1?'s':''}</b> pending assignment to a scope.<span class="pin" title="Nota 1">1</span></span>
+      <span class="sp"></span>
+      <button id="btnReview">Review</button>
+    </div>`;
+  }
+
+  /* KPI */
+  h += `<div class="tiles">
+    <div class="tile"><div class="ic" style="background:var(--tile-b)">▤</div><div><div class="lb">Items</div><div class="vl">${shown.length}</div></div></div>
+    <div class="tile"><div class="ic" style="background:var(--tile-a)">▶</div><div><div class="lb">Milestones</div><div class="vl">${msCount}</div></div></div>
+    <div class="tile"><div class="ic" style="background:var(--tile-g)">✔</div><div><div class="lb">Completed</div><div class="vl">${done}</div></div></div>
+    <div class="tile"><div class="ic" style="background:var(--tile-o)">%</div><div><div class="lb">Percentage</div><div class="vl">${(showEmpty?0:projectProgress()).toFixed(1)} %</div></div></div>
+  </div>`;
+
+  /* toolbar */
+  h += `<div class="toolbar">
+    <button class="btn pri" id="btnNew">＋ Create scope</button>
+    <span class="sp"></span>
+    <div class="seg"><button id="expAll">Expand all</button><button id="colAll">Collapse all</button></div>
+  </div>`;
+
+  if(!gs.length){
+    h += `<div class="card"><div class="empty">
+      <div class="il">▦</div>
+      <h3>No scopes created yet.</h3>
+      <p>Milestones starts empty. Create a scope to choose which items you want to track.<span class="pin" title="Nota 2">2</span></p>
+      <button class="btn pri" id="btnNew2">＋ Create scope</button>
+    </div></div>`;
+  } else {
+    h += `<div class="card"><div class="tscroll"><table><thead><tr>
+      <th style="width:62px">Quote</th>
+      <th style="min-width:220px">Scope / Item</th>
+      <th style="width:132px">Type of scope<span class="pin" title="Nota 3">3</span></th>
+      <th style="width:124px;text-align:right">Price</th>
+      <th style="width:88px;text-align:center">Budget<span class="pin" title="Nota 8">8</span></th>`;
+    phases.forEach(p=>{ h += `<th class="ph">${esc(p.name)}<span class="wg">${(+p.weight||0)}%</span></th>`; });
+    h += `<th style="width:96px;text-align:right">Progress<span class="pin" title="Nota 4">4</span></th><th style="width:44px"></th></tr></thead><tbody>`;
+
+    gs.forEach(g=>{
+      const open = !!g.open;   // por defecto recogido
+      const quotes = [...new Set(g.scopeIds.map(s=>scope(s)?.q).filter(Boolean))].sort().join(' · ');
+      const gp = groupProgress(g);
+      h += `<tr class="grp" data-g="${g.id}">
+        <td class="qcell">${quotes||'—'}</td>
+        <td><div class="gname"><button class="chev" data-tog="${g.id}" aria-label="Expand">${open?'▾':'▸'}</button>${esc(g.name)}</div></td>
+        <td><span class="tychip">${esc(typeName(g.typeId))||'—'}</span></td>
+        <td class="num">${money(groupPrice(g))} <span style="color:var(--ink-3);font-size:11px">COP</span></td>
+        <td class="ctr">${edCell('g',g.id)}</td>`;
+      phases.forEach(p=>{
+        const v = groupPhasePct(g,p.id);
+        h += `<td class="ctr"><button class="cell${v==null?' empty':''}" data-bulk="${g.id}|${p.id}" title="Apply progress to every item in this scope">${v==null?'+':pctTxt(v)}</button></td>`;
+      });
+      const gAny = phases.some(p=>groupPhasePct(g,p.id)!=null);
+      h += `<td class="num">${gAny
+          ? `<span class="prog">${gp.toFixed(0)}%</span><div class="bar"><i style="width:${gp.toFixed(0)}%"></i></div>`
+          : `<span style="color:#BDBDBD">—</span>`}</td>
+        <td><button class="rowact" data-gmenu="${g.id}" title="Scope actions">⋮</button></td></tr>`;
+
+      if(open) g.scopeIds.forEach(sid=>{
+        const s = scope(sid); if(!s) return;
+        const sp = scopeProgress(sid);
+        const dead = s.price<=0;
+        h += `<tr class="sc${dead?' excl':''}" data-s="${sid}">
+          <td class="qcell">${s.q}</td>
+          <td class="scname">${esc(s.name)}${dead?' <span class="tychip" style="background:#EEE;color:#757575">excluded</span>':''}</td>
+          <td></td>
+          <td class="num">${money(s.price)} <span style="color:var(--ink-3);font-size:11px">COP</span></td>
+          <td class="ctr">${edCell('i',sid)}</td>`;
+        phases.forEach(p=>{
+          const m = ms[sid+'|'+p.id];
+          let inner = '+';
+          if(m){
+            inner = cellMode==='pct'
+              ? `<span class="${m.met?'ok':'late'}">${m.pct}%</span><span class="dt ${m.met?'ok':'late'}">${m.date}</span>`
+              : `<span class="${m.met?'ok':'late'}">${m.date}</span><span class="dt">${m.pct}%</span>`;
+          }
+          h += `<td class="ctr"><button class="cell${m?'':' empty'}" data-c="${sid}|${p.id}" title="${m?m.date+' · '+m.pct+'%':'Add milestone'}">${inner}</button></td>`;
+        });
+        const sAny = phases.some(p=>ms[sid+'|'+p.id]);
+        h += `<td class="num">${sAny
+            ? `<span class="prog">${sp.toFixed(0)}%</span><div class="bar"><i style="width:${sp.toFixed(0)}%"></i></div>`
+            : `<span style="color:#BDBDBD">—</span>`}</td>
+          <td><button class="rowact" data-rm="${sid}" title="Remove from scope">✕</button></td></tr>`;
+      });
+    });
+    h += `</tbody></table></div></div>`;
+  }
+
+  h += notesPanel([
+    ['Alerta de pendientes','Se calcula en vivo: <code>items de todas las quotes del proyecto − items asignados a algún scope</code>. Nunca se persiste. Desaparece sola al llegar a cero. <b>Review</b> abre el selector prefiltrado a los pendientes, sin pantalla adicional.'],
+    ['Inicio vacío','Milestones ya no carga items automáticamente. Un proyecto sin scopes abre vacío. Las quotes no se modifican nunca.'],
+    ['Type of Scope','Propiedad del <b>scope</b> de Milestones, no del item de la quote. Viene del catálogo de Settings › Quotes › Product Types — edítalo allí y estas opciones cambian. No se repite en las filas hijas.'],
+    ['Progreso','Item: <code>Σ(% × peso_fase) ÷ Σ(pesos)</code>. Scope: promedio de sus items <b>ponderado por precio</b>, y sobre esa fila consolidada se aplica de nuevo el peso de fase. Ambas fórmulas verificadas contra los mockups de julio.'],
+    ['Scope recién creado','Aparece <b>recogido</b>: sólo la fila consolidada, como un group de Excel. El detalle se despliega con el chevron o con <i>Expand all</i>. Se conserva el formato actual de la vista: <b>todo item que se importa a Milestones llega sin ningún avance</b>, siempre y sin excepción — la celda muestra <code>+</code> hasta que el usuario la diligencia. No hay precarga, ni parcial ni total, ni en el scope ni en sus items. El avance siempre lo diligencia el usuario. Una celda de scope sólo muestra porcentaje cuando al menos uno de sus items ya reportó esa fase; mientras tanto es <code>+</code>, no <code>0%</code>. Igual la columna Progress: <code>—</code> hasta el primer reporte.'],
+    ['Celda de scope','Escribir en la fila del scope es una <b>carga masiva</b>: aplica el valor a todos los items hijos. No se guarda un porcentaje aparte en el scope — una sola fuente de verdad (Decisión 3).'],
+    ['Items cancelados','Los items con precio ≤ 0 se muestran pero quedan fuera del denominador de la ponderación por precio (Decisión 4). Sin esta regla un precio negativo invierte el promedio.'],
+    ['Budget','Nueva columna a la derecha de <b>Price</b>. El icono abre el desglose de <b>Engineering & Design</b> — Calculations, Design y Project Manager — con cantidad, unidad y total. Aparece en <b>cada item</b> y en el <b>consolidado del scope</b>, donde se suma sección por sección. Hover para verlo, clic para fijarlo. Los items cancelados (precio ≤ 0) muestran <code>—</code>. <b>En la maqueta las cantidades son supuestas</b>, derivadas del precio; en el sistema real deben leerse del detalle de costos de la quote.'],
+    ['Remover item','<code>✕</code> elimina sólo la relación scope↔item. El item sigue existiendo en su quote, conserva sus milestones, y vuelve a contarse como pendiente.'],
+  ]);
+
+  c.innerHTML = h;
+  wireProject();
+}
+
+function wireProject(){
+  closePop();
+  const $ = s=>document.getElementById(s);
+  $('btnNew')?.addEventListener('click',()=>openGroupDialog(null,false));
+  $('btnNew2')?.addEventListener('click',()=>openGroupDialog(null,false));
+  $('btnReview')?.addEventListener('click',()=>openGroupDialog(null,true));
+  $('expAll')?.addEventListener('click',()=>{groups.forEach(g=>g.open=true); renderProject();});
+  $('colAll')?.addEventListener('click',()=>{groups.forEach(g=>g.open=false); renderProject();});
+  document.querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{
+    const g=groups.find(x=>x.id===b.dataset.tog); g.open = !g.open; renderProject();
+  });
+  document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{
+    const [sid,pid]=b.dataset.c.split('|'); openCellDialog(sid,pid);
+  });
+  document.querySelectorAll('[data-bulk]').forEach(b=>b.onclick=()=>{
+    const [gid,pid]=b.dataset.bulk.split('|'); openBulkDialog(gid,pid);
+  });
+  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>removeScope(b.dataset.rm));
+  document.querySelectorAll('[data-gmenu]').forEach(b=>b.onclick=()=>openGroupMenu(b.dataset.gmenu,b));
+  document.querySelectorAll('[data-ed]').forEach(b=>{
+    b.onmouseenter=()=>{ if(!document.getElementById('pop')?.dataset.pinned) showPop(b); };
+    b.onmouseleave=()=>{ const p=document.getElementById('pop'); if(p && !p.dataset.pinned) setTimeout(()=>{ const q=document.getElementById('pop'); if(q && !q.dataset.pinned && !q.matches(':hover')) closePop(); },160); };
+    b.onclick=e=>{ e.stopPropagation(); const p=document.getElementById('pop');
+      if(p && p.dataset.pinned && b.classList.contains('on')) return closePop();
+      showPop(b); document.getElementById('pop').dataset.pinned='1'; };
+  });
+}
+
+/* =========================================================================
+   DIÁLOGOS
+   ========================================================================= */
+const scrim = document.getElementById('scrim'), host = document.getElementById('dlgHost');
+function closeDlg(){ scrim.classList.remove('on'); host.innerHTML=''; }
+scrim.addEventListener('mousedown',e=>{ if(e.target===scrim) closeDlg(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDlg(); });
+function showDlg(html){
+  host.innerHTML = html; scrim.classList.add('on');
+  host.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeDlg);
+  const f = host.querySelector('input,select,textarea'); if(f) setTimeout(()=>f.focus(),40);
+}
+
+/* ---- crear / editar scope de Milestones ---- */
+function openGroupDialog(gid, pendingOnly){
+  const g = gid ? groups.find(x=>x.id===gid) : null;
+  const sel = new Set(g ? g.scopeIds : []);
+  let showAll = !pendingOnly && !!g;
+  let filter = '';
+
+  const draw = ()=>{
+    const assigned = assignedIds();
+    const list = SCOPES.filter(s=>{
+      const free = !assigned.has(s.id) || sel.has(s.id);
+      if(!showAll && !free) return false;
+      return !filter || (s.name+' '+s.q).toLowerCase().includes(filter.toLowerCase());
+    });
+    host.querySelector('#lst').innerHTML = list.map(s=>{
+      const other = groupOf(s.id);
+      const moving = other && other.id!==gid && sel.has(s.id);
+      const tag = other && other.id!==gid
+        ? `<span class="tag" style="${moving?'background:#FFF3E0;color:#B26500':''}">${moving?'mover desde ':''}${esc(other.name)}</span>` : '';
+      return `<label class="pitem"><input type="checkbox" data-p="${s.id}" ${sel.has(s.id)?'checked':''}>
+        <span class="q">${s.q}</span><span class="n">${esc(s.name)}</span>${tag}
+        <span class="p">${money(s.price)}</span></label>`;
+    }).join('') || `<div style="padding:22px;text-align:center;color:var(--ink-3);font-size:13px">No matching items.</div>`;
+    host.querySelectorAll('[data-p]').forEach(cb=>cb.onchange=()=>{
+      cb.checked ? sel.add(cb.dataset.p) : sel.delete(cb.dataset.p);
+      draw(); refreshFoot();
+    });
+    refreshFoot();
+  };
+  const refreshFoot = ()=>{
+    const moves = [...sel].filter(id=>{ const o=groupOf(id); return o && o.id!==gid; });
+    host.querySelector('#cnt').textContent = `${sel.size} of ${SCOPES.length} items selected`;
+    const mv = host.querySelector('#mv');
+    mv.textContent = moves.length ? `${moves.length} will be moved from another scope` : '';
+    mv.style.display = moves.length ? '' : 'none';
+    host.querySelector('#save').disabled = !valid();
+  };
+  const valid = ()=> host.querySelector('#gname').value.trim() && host.querySelector('#gtype').value && sel.size>0;
+
+  showDlg(`<div class="dlg wide"><header>
+      <button class="x" data-close>✕</button><h3>${g?'Edit scope':'Create scope'}</h3>
+    </header><div class="bd">
+      <div class="row2">
+        <div class="fld"><label>Scope name <span class="rq">*</span></label>
+          <input type="text" id="gname" value="${g?esc(g.name):''}" placeholder="e.g. Curtain Wall" autocomplete="off">
+          <div class="err" id="enm">A scope with this name already exists in this project.</div></div>
+        <div class="fld"><label>Type of scope <span class="rq">*</span></label>
+          <select id="gtype"><option value="">Select type of scope</option>
+            ${types.map(t=>`<option value="${t.id}" ${g&&g.typeId===t.id?'selected':''}>${esc(t.name)}</option>`).join('')}
+          </select>
+          <div class="hint">${types.length} values from Settings › Quotes › Product Types.</div></div>
+      </div>
+      <div class="fld" style="margin-bottom:6px">
+        <label style="display:flex;align-items:center">Items <span class="rq">*</span>
+          <span style="flex:1"></span>
+          <label class="sw"><input type="checkbox" id="all" ${showAll?'checked':''}> Show items already assigned</label>
+        </label>
+        <div class="picker">
+          <div class="pf"><span style="color:var(--ink-3)">🔍</span><input id="flt" placeholder="Filtrar por nombre o quote" autocomplete="off"></div>
+          <div class="lst" id="lst"></div>
+          <div class="pfoot"><span id="cnt"></span>
+            <span id="mv" style="color:var(--amber-ink)"></span><span class="sp"></span>
+            <span>${pendingScopes().length} pending</span></div>
+        </div>
+        <div class="hint">The list is never restrictively filtered: the switch above also shows items already assigned to another scope.</div>
+      </div>
+    </div><footer>
+      <button class="btn flat" data-close>Cancel</button>
+      <button class="btn pri" id="save">Save</button>
+    </footer></div>`);
+
+  host.querySelector('#all').onchange = e=>{ showAll=e.target.checked; draw(); };
+  host.querySelector('#flt').oninput = e=>{ filter=e.target.value; draw(); };
+  const revalidate = ()=>{ host.querySelector('#save').disabled = !valid(); };
+  host.querySelector('#gname').oninput = revalidate;
+  host.querySelector('#gtype').onchange = revalidate;
+  draw(); revalidate();
+
+  host.querySelector('#save').onclick = ()=>{
+    const name = host.querySelector('#gname').value.trim();
+    const dup = groups.some(x=>x.id!==gid && x.name.toLowerCase()===name.toLowerCase());
+    host.querySelector('#enm').classList.toggle('on',dup);
+    if(dup) return;
+    const typeId = host.querySelector('#gtype').value;
+    const ids = [...sel];
+    groups.forEach(x=>{ if(x.id!==gid) x.scopeIds = x.scopeIds.filter(s=>!sel.has(s)); });
+    if(g){ g.name=name; g.typeId=typeId; g.scopeIds=ids; }
+    else groups.push({id:'g'+(seq++),name,typeId,scopeIds:ids,open:false}); // recogido al crearse
+    closeDlg(); showEmpty=false; syncToggles(); renderProject();
+    toast(g?'Scope updated':`Scope "${name}" created`);
+  };
+}
+
+/* ---- E&D: icono en la celda + popover con el desglose ---- */
+const ED_ICON = '<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 16H5V5h14v14zM7 12h5v2H7v-2zm0-4h10v2H7V8zm0 8h7v2H7v-2z"/></svg>';
+
+function edCell(kind, id){
+  const rows = kind==='g' ? edForScope(groups.find(g=>g.id===id)) : edForItem(id);
+  if(!rows) return '<span class="ednone">—</span>';
+  return `<button class="edbtn" data-ed="${kind}|${id}" aria-label="Engineering &amp; Design budget">${ED_ICON}</button>`;
+}
+
+function closePop(){ document.getElementById('pop')?.remove();
+  document.querySelectorAll('.edbtn.on').forEach(b=>b.classList.remove('on')); }
+
+function showPop(btn){
+  closePop();
+  const [kind,id] = btn.dataset.ed.split('|');
+  const isG = kind==='g';
+  const rows = isG ? edForScope(groups.find(g=>g.id===id)) : edForItem(id);
+  if(!rows) return;
+  const label = isG ? groups.find(g=>g.id===id).name : scope(id).name;
+  const n = isG ? groups.find(g=>g.id===id).scopeIds.filter(x=>scope(x)?.price>0).length : 0;
+
+  const el = document.createElement('div');
+  el.className='pop'; el.id='pop';
+  el.innerHTML = `<h5>Engineering &amp; Design</h5>
+    <p class="sub">${esc(label)}${isG?` · consolidated from ${n} item${n!==1?'s':''}`:''}</p>
+    <table><thead><tr><th>Section</th><th class="r">Qty</th><th style="text-align:center">Unit</th><th class="r">Total</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><td class="lb">${r.name}</td><td class="r">${r.qty.toLocaleString('de-DE')}</td>
+      <td class="u">${r.unit}</td><td class="r">${money(r.total)}</td></tr>`).join('')}
+    <tr class="tot"><td class="lb">Total</td><td></td><td></td><td class="r">${money(edTotal(rows))} <span style="color:var(--ink-3);font-size:10.5px">COP</span></td></tr>
+    </tbody></table>`;
+  document.body.appendChild(el);
+
+  const r = btn.getBoundingClientRect(), w = el.offsetWidth, h = el.offsetHeight;
+  el.style.left = Math.max(8, Math.min(r.left + r.width/2 - w/2, innerWidth - w - 8)) + 'px';
+  el.style.top  = (r.bottom + h + 8 > innerHeight ? Math.max(8, r.top - h - 6) : r.bottom + 6) + 'px';
+  btn.classList.add('on');
+}
+
+/* ---- confirmación propia (window.confirm está bloqueado en el visor) ---- */
+function ask({title, body, ok='Confirm', danger=false, onOk}){
+  showDlg(`<div class="dlg" style="max-width:460px"><header>
+      <button class="x" data-close>✕</button><h3>${esc(title)}</h3></header>
+    <div class="bd"><div class="askbody">${body}</div></div>
+    <footer><button class="btn flat" data-close>Cancel</button>
+      <button class="btn pri" id="okb" ${danger?'style="background:var(--red)"':''}>${esc(ok)}</button></footer></div>`);
+  host.querySelector('#okb').onclick = ()=>{ closeDlg(); onOk(); };
+}
+
+/* ---- menú anclado del scope (mat-menu) ---- */
+function closeMenu(){ document.getElementById('menu')?.remove(); }
+document.addEventListener('mousedown', e=>{
+  const p=document.getElementById('pop');
+  if(p && !p.contains(e.target) && !e.target.closest('[data-ed]')) closePop();
+  const m = document.getElementById('menu');
+  if(m && !m.contains(e.target) && !e.target.closest('[data-gmenu]')) closeMenu();
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeMenu(); closePop(); } });
+
+function openGroupMenu(gid, btn){
+  closeMenu();
+  const g = groups.find(x=>x.id===gid);
+  const r = btn.getBoundingClientRect();
+  const m = document.createElement('div');
+  m.className = 'menu'; m.id = 'menu';
+  m.innerHTML = `<div class="hd">${esc(g.name)}</div>
+    <button data-a="edit"><span class="mi">✎</span>Edit scope</button>
+    <button data-a="add"><span class="mi">＋</span>Add items</button>
+    <button data-a="clear"><span class="mi">↩</span>Release all items</button>
+    <hr>
+    <button data-a="del" class="danger"><span class="mi">🗑</span>Delete scope</button>`;
+  document.body.appendChild(m);
+  const w = m.offsetWidth, h = m.offsetHeight;
+  m.style.left = Math.max(8, Math.min(r.right - w, innerWidth - w - 8)) + 'px';
+  m.style.top  = (r.bottom + h + 8 > innerHeight ? Math.max(8, r.top - h - 4) : r.bottom + 4) + 'px';
+
+  m.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{
+    const a = b.dataset.a; closeMenu();
+    if(a==='edit' || a==='add') return openGroupDialog(gid,false);
+    if(a==='clear') return ask({
+      title:'Release all items',
+      body:`The <b>${g.scopeIds.length}</b> scope↔item links of <b>${esc(g.name)}</b> will be removed, but the scope itself is kept, empty.
+            <ul><li>No item or quote is deleted.</li><li>The progress of each item is kept.</li>
+            <li>The ${g.scopeIds.length} items are counted as pending again.</li></ul>`,
+      ok:'Release', onOk:()=>{
+        const n=g.scopeIds.length; g.scopeIds=[]; renderProject();
+        toast(`${n} items released · back to pending`);
+      }});
+    if(a==='del') return ask({
+      title:'Delete scope', danger:true, ok:'Delete',
+      body:`Delete the scope <b>${esc(g.name)}</b>?
+            <ul><li>Its <b>${g.scopeIds.length}</b> item(s) are counted as pending again.</li>
+            <li>No item or quote is deleted.</li>
+            <li>The progress recorded on each item is kept.</li></ul>`,
+      onOk:()=>{
+        const n=g.scopeIds.length; groups = groups.filter(x=>x.id!==gid); renderProject();
+        toast(`Scope deleted · ${n} items back to pending`);
+      }});
+  });
+}
+
+function removeScope(sid){
+  const g = groupOf(sid); if(!g) return;
+  ask({
+    title:'Remove item from scope', ok:'Remove',
+    body:`Remove <b>${esc(scope(sid).name)}</b> from the scope <b>${esc(g.name)}</b>.
+          <ul><li>Only the scope↔item link is removed.</li>
+          <li>The item still exists in quote ${scope(sid).q} and keeps its progress.</li>
+          <li>It is counted as pending again.</li></ul>`,
+    onOk:()=>{
+      g.scopeIds = g.scopeIds.filter(x=>x!==sid);
+      renderProject(); toast('Item removed from scope · back to pending');
+    }});
+}
+
+/* ---- editar celda milestone ---- */
+function openCellDialog(sid,pid){
+  const s = scope(sid), p = phases.find(x=>x.id===pid), m = ms[sid+'|'+pid];
+  const iso = m ? m.date.replace(/\//g,'-') : new Date().toISOString().slice(0,10);
+  showDlg(`<div class="dlg"><header>
+      <button class="x" data-close>✕</button><h3>Item ${esc(s.name)} — ${esc(p.name)}</h3></header>
+    <div class="bd">
+      <div class="row2">
+        <div class="fld"><label>Milestone date <span class="rq">*</span></label><input type="date" id="d" value="${iso}"></div>
+        <div class="fld"><label>Percentage <span class="rq">*</span></label><input type="number" id="p" min="0" max="100" step="1" value="${m?m.pct:''}"></div>
+      </div>
+      <div class="fld"><label>Notes</label><textarea id="n" placeholder="">${m?esc(m.notes):''}</textarea></div>
+      <div class="hint">Fase <b>${esc(p.name)}</b> · peso ${(+p.weight||0)}% del progreso. Este registro ya existe hoy en el sistema (fecha, porcentaje, archivos y notas).</div>
+    </div><footer>
+      ${m?'<button class="btn flat" id="del" style="color:var(--red);margin-right:auto">Delete</button>':''}
+      <button class="btn flat" data-close>Cancel</button>
+      <button class="btn pri" id="save">Save</button>
+    </footer></div>`);
+  host.querySelector('#save').onclick = ()=>{
+    const pct = Math.max(0,Math.min(100, +host.querySelector('#p').value||0));
+    const d = host.querySelector('#d').value.replace(/-/g,'/');
+    ms[sid+'|'+pid] = {pct, date:d, met:pct>=100, notes:host.querySelector('#n').value};
+    closeDlg(); renderProject(); toast('Milestone saved');
+  };
+  host.querySelector('#del')?.addEventListener('click',()=>{
+    delete ms[sid+'|'+pid]; closeDlg(); renderProject(); toast('Milestone deleted');
+  });
+}
+
+/* ---- carga masiva desde la fila del scope ---- */
+function openBulkDialog(gid,pid){
+  const g = groups.find(x=>x.id===gid), p = phases.find(x=>x.id===pid);
+  const cur = groupPhasePct(g,pid);
+  showDlg(`<div class="dlg"><header>
+      <button class="x" data-close>✕</button><h3>${esc(g.name)} — ${esc(p.name)}</h3></header>
+    <div class="bd">
+      <div class="row2">
+        <div class="fld"><label>Milestone date <span class="rq">*</span></label><input type="date" id="d" value="${new Date().toISOString().slice(0,10)}"></div>
+        <div class="fld"><label>Percentage <span class="rq">*</span></label><input type="number" id="p" min="0" max="100" value="${cur!=null?Math.round(cur):''}"></div>
+      </div>
+      <div class="alert" style="margin:0">
+        <span class="ai">ℹ</span>
+        <span>Bulk load: the value is applied to the <b>${g.scopeIds.length} item${g.scopeIds.length!==1?'s':''}</b> in this scope.</span>
+      </div>
+    </div><footer>
+      <button class="btn flat" data-close>Cancel</button>
+      <button class="btn pri" id="save">Apply to all</button>
+    </footer></div>`);
+  host.querySelector('#save').onclick = ()=>{
+    const pct = Math.max(0,Math.min(100, +host.querySelector('#p').value||0));
+    const d = host.querySelector('#d').value.replace(/-/g,'/');
+    g.scopeIds.forEach(sid=>{ ms[sid+'|'+pid] = {pct, date:d, met:pct>=100, notes:''}; });
+    closeDlg(); renderProject(); toast(`Applied ${pct}% to ${g.scopeIds.length} items`);
+  };
+}
+
+/* =========================================================================
+   VISTA · SETTINGS
+   ========================================================================= */
+let setTab='phases';
+function renderSettings(){
+  const c = document.getElementById('setCanvas');
+  c.innerHTML = setTab==='phases' ? phasesHtml() : typesHtml();
+  setTab==='phases' ? wirePhases() : wireTypes();
+}
+
+function phasesHtml(){
+  const tot = totalWeight();
+  const ok = Math.abs(tot-100) < 0.005;
+  let h = `<div class="card">
+    <div class="sethead"><h2>MILESTONES</h2><button class="btn pri" id="pNew">＋ New</button></div>
+    <div class="tscroll"><table><thead><tr>
+      <th style="width:44px"></th><th style="width:80px">Index</th><th style="min-width:220px">Name</th>
+      <th style="min-width:200px">Description</th>
+      <th style="width:150px;text-align:right">Weight (%)<span class="pin" title="Nota 1">1</span></th>
+      <th style="width:110px">Actions</th></tr></thead><tbody>`;
+  phases.forEach((p,i)=>{
+    const bad = p.weight==='' || +p.weight<0 || +p.weight>100;
+    h += `<tr>
+      <td><span class="dragh">⣿</span></td>
+      <td style="font-variant-numeric:tabular-nums">${i+1}</td>
+      <td>${esc(p.name)}</td>
+      <td style="color:var(--ink-2)">${esc(p.desc||'')}</td>
+      <td class="num"><input class="wt${bad?' bad':''}" type="number" min="0" max="100" step="0.01" value="${p.weight}" data-w="${p.id}" aria-label="Weight for ${esc(p.name)}"></td>
+      <td><button class="rowact" data-pe="${p.id}" title="Edit">✎</button><button class="rowact" data-pd="${p.id}" title="Delete">🗑</button></td>
+    </tr>`;
+  });
+  h += `<tr class="totrow"><td></td><td></td><td></td>
+      <td style="text-align:right;color:var(--ink-2);font-size:12px;letter-spacing:.06em;text-transform:uppercase">Total</td>
+      <td class="num"><span class="totpill ${ok?'good':'warn'}">${ok?'✔':'⚠'} ${tot.toFixed(2)} %</span></td><td></td></tr>`;
+  h += `</tbody></table></div>`;
+  if(!ok) h += `<div class="alert" style="margin:0;border-radius:0;border-left-width:4px;border-top:1px solid var(--amber-line)">
+      <span class="ai">⚠</span>
+      <span>Weights add up to <b>${tot.toFixed(2)}%</b> instead of 100%. You can still save: progress is normalised over the total (<code>Σ(% × peso) ÷ ${tot.toFixed(2)}</code>), but the figures stop being comparable across configurations.<span class="pin" title="Nota 2">2</span></span>
+    </div>`;
+  h += `</div>`;
+
+  h += notesPanel([
+    ['Nueva columna Weight','Se integra en la tabla existente entre <code>DESCRIPTION</code> y <code>ACTIONS</code>, y como tercer campo del diálogo Name/Description. Sin pantalla nueva. Edición en línea: escribe directamente en la celda.'],
+    ['Validación','Duro por campo: numérico, 0–100, hasta 2 decimales, vacío = 0, negativos rechazados. Blando en el total: se avisa cuando ≠ 100 pero <b>nunca se bloquea el guardado</b> — si no, es imposible pasar de una configuración válida a otra. La fórmula divide por Σ pesos, así que se auto-normaliza.'],
+    ['Alcance global','Los pesos son globales: cambiarlos mueve el porcentaje reportado de <b>todos</b> los proyectos, incluso los cerrados. Conviene un diálogo de confirmación que diga a cuántos afecta (Riesgo H-4).'],
+    ['Backfill','Al desplegar la columna hay que sembrarla con las constantes que el código ya usa hoy (5/5/5/15/15/30/15/10 según los mockups) para que ningún porcentaje existente se mueva. Confirmar en el código primero.'],
+    ['Prueba en vivo','Cambia un peso aquí y vuelve a Milestones: el progreso de items y scopes se recalcula. Así se ve el acoplamiento real entre Settings y la vista del proyecto.'],
+  ]);
+  return h;
+}
+
+function wirePhases(){
+  document.querySelectorAll('[data-w]').forEach(inp=>{
+    inp.oninput = ()=>{
+      const p = phases.find(x=>x.id===inp.dataset.w);
+      p.weight = inp.value==='' ? 0 : Math.round(parseFloat(inp.value)*100)/100;
+      const t = totalWeight(), ok = Math.abs(t-100)<0.005;
+      const pill = document.querySelector('.totpill');
+      pill.className = 'totpill '+(ok?'good':'warn');
+      pill.textContent = (ok?'✔ ':'⚠ ')+t.toFixed(2)+' %';
+      inp.classList.toggle('bad', inp.value!=='' && (+inp.value<0 || +inp.value>100));
+    };
+    inp.onblur = ()=>renderSettings();
+  });
+  document.getElementById('pNew').onclick = ()=>openPhaseDialog(null);
+  document.querySelectorAll('[data-pe]').forEach(b=>b.onclick=()=>openPhaseDialog(b.dataset.pe));
+  document.querySelectorAll('[data-pd]').forEach(b=>b.onclick=()=>{
+    const p = phases.find(x=>x.id===b.dataset.pd);
+    ask({title:'Delete phase', danger:true, ok:'Delete',
+      body:`Delete the phase <b>${esc(p.name)}</b> (weight ${p.weight}%)?
+            <ul><li>It disappears as a column in Milestones for <b>every</b> project.</li>
+            <li>The remaining weights add up to ${(totalWeight()-p.weight).toFixed(2)}%, so reported progress will change.</li></ul>`,
+      onOk:()=>{ phases = phases.filter(x=>x.id!==p.id); renderSettings(); toast('Phase deleted'); }});
+  });
+}
+
+function openPhaseDialog(pid){
+  const p = pid ? phases.find(x=>x.id===pid) : null;
+  showDlg(`<div class="dlg"><header><button class="x" data-close>✕</button><h3>Milestone</h3></header>
+    <div class="bd">
+      <div class="fld"><label>Name <span class="rq">*</span></label><input type="text" id="n" value="${p?esc(p.name):''}"></div>
+      <div class="fld"><label>Description</label><input type="text" id="d" value="${p?esc(p.desc):''}"></div>
+      <div class="fld" style="max-width:200px"><label>Weight (%) <span class="rq">*</span></label>
+        <input type="number" id="w" min="0" max="100" step="0.01" value="${p?p.weight:''}">
+        <div class="hint">Weight of this phase within overall progress.</div></div>
+    </div><footer>
+      <button class="btn flat" data-close>Cancel</button><button class="btn pri" id="save">Save</button>
+    </footer></div>`);
+  host.querySelector('#save').onclick = ()=>{
+    const n = host.querySelector('#n').value.trim(); if(!n) return;
+    const w = Math.max(0,Math.min(100, parseFloat(host.querySelector('#w').value)||0));
+    const d = host.querySelector('#d').value.trim();
+    if(p){ p.name=n; p.desc=d; p.weight=w; } else phases.push({id:'ph'+(seq++),name:n,desc:d,weight:w});
+    closeDlg(); renderSettings(); toast('Saved');
+  };
+}
+
+function typesHtml(){
+  const used = id => groups.filter(g=>g.typeId===id).length;
+  return `<div class="card">
+    <div class="sethead"><h2>PRODUCT TYPES</h2><button class="btn pri" id="tNew">＋ New</button></div>
+    <div class="tscroll"><table><thead><tr>
+      <th style="min-width:260px">Name</th><th>Description</th>
+      <th style="width:130px">In use<span class="pin" title="Nota 3">3</span></th>
+      <th style="width:110px">Actions</th>
+    </tr></thead><tbody>
+      ${types.map(t=>{
+        const n = used(t.id);
+        return `<tr><td>${esc(t.name.toUpperCase())}</td>
+        <td style="color:var(--ink-2)">${esc(t.desc||'')}</td>
+        <td style="color:var(--ink-2)">${n?`${n} scope${n>1?'s':''}`:'—'}</td>
+        <td><button class="rowact" data-te="${t.id}" title="Edit">✎</button><button class="rowact" data-td="${t.id}" title="Delete">🗑</button></td></tr>`;
+      }).join('')}
+    </tbody></table></div></div>
+    ${notesPanel([
+      ['Catálogo único','Éste es el catálogo que alimenta el desplegable <b>Type of Scope</b> del diálogo Create scope. No se crea ningún catálogo paralelo (criterio de aceptación 41). Crea un tipo aquí y aparecerá de inmediato en Milestones.'],
+      ['Pendiente de confirmar','Falta verificar en el código que <code>PRODUCT TYPES</code> es efectivamente lo que el brief llama «Type of Scope». Sus valores actuales (Architectural Louver, Perforated Panel Screen…) no coinciden con los ejemplos del brief (Curtain Wall, Windows…), aunque son el mismo concepto. Ver sección D del análisis.'],
+      ['Integridad referencial','Un tipo usado por algún scope no debería poder eliminarse sin más. Aquí se bloquea el borrado y se indica cuántos scopes lo usan — el backend debería aplicar la misma regla (<code>ON DELETE RESTRICT</code>).'],
+    ])}`;
+}
+
+function wireTypes(){
+  document.getElementById('tNew').onclick = ()=>openTypeDialog(null);
+  document.querySelectorAll('[data-te]').forEach(b=>b.onclick=()=>openTypeDialog(b.dataset.te));
+  document.querySelectorAll('[data-td]').forEach(b=>b.onclick=()=>{
+    const t = types.find(x=>x.id===b.dataset.td);
+    const n = groups.filter(g=>g.typeId===t.id).length;
+    if(n) return ask({
+      title:'Cannot delete', ok:'Understood',
+      body:`<b>${esc(t.name)}</b> is in use by <b>${n}</b> Milestones scope(s).
+            <ul><li>Change the Type of Scope on those scopes first.</li>
+            <li>The backend should enforce the same restriction.</li></ul>`,
+      onOk:()=>{}});
+    ask({title:'Delete product type', danger:true, ok:'Delete',
+      body:`Delete <b>${esc(t.name)}</b> from the catalogue? It is not in use by any Milestones scope.`,
+      onOk:()=>{ types = types.filter(x=>x.id!==t.id); renderSettings(); toast('Product type deleted'); }});
+  });
+}
+
+function openTypeDialog(tid){
+  const t = tid ? types.find(x=>x.id===tid) : null;
+  showDlg(`<div class="dlg"><header><button class="x" data-close>✕</button><h3>Product type</h3></header>
+    <div class="bd">
+      <div class="fld"><label>Name <span class="rq">*</span></label>
+        <input type="text" id="n" value="${t?esc(t.name):''}" placeholder="e.g. Curtain Wall" autocomplete="off">
+        <div class="err" id="e">A product type with this name already exists.</div></div>
+      <div class="fld"><label>Description</label><textarea id="d" placeholder="Material &amp; specifications…">${t?esc(t.desc||''):''}</textarea></div>
+      <div class="hint">This value becomes available immediately as <b>Type of Scope</b> when creating or editing a scope in Milestones.</div>
+    </div><footer>
+      <button class="btn flat" data-close>Cancel</button><button class="btn pri" id="save">Save</button>
+    </footer></div>`);
+  const save = host.querySelector('#save');
+  const chk = ()=>{ save.disabled = !host.querySelector('#n').value.trim(); };
+  host.querySelector('#n').oninput = chk; chk();
+  save.onclick = ()=>{
+    const n = host.querySelector('#n').value.trim();
+    const dup = types.some(x=>x.id!==tid && x.name.toLowerCase()===n.toLowerCase());
+    host.querySelector('#e').classList.toggle('on',dup); if(dup) return;
+    const d = host.querySelector('#d').value.trim();
+    if(t){ t.name=n; t.desc=d; } else types.push({id:'ty'+(seq++),name:n,desc:d});
+    closeDlg(); renderSettings(); toast(t?'Product type updated':`"${n}" added to the catalogue`);
+  };
+}
+
+function notesPanel(items){
+  return `<div class="notepanel"><h4>Notas de especificación</h4><ol>${
+    items.map(([t,b])=>`<li><b>${t}</b> — ${b}</li>`).join('')}</ol></div>`;
+}
+
+/* =========================================================================
+   NAVEGACIÓN Y CONTROLES DE MAQUETA
+   ========================================================================= */
+const vP = document.getElementById('viewProject'), vS = document.getElementById('viewSettings');
+const nP = document.getElementById('navProj'), nS = document.getElementById('navSet');
+function go(which){
+  const p = which==='proj';
+  vP.hidden=!p; vS.hidden=p; nP.classList.toggle('on',p); nS.classList.toggle('on',!p);
+  p ? renderProject() : renderSettings();
+}
+nP.onclick=()=>go('proj'); nS.onclick=()=>go('set');
+document.querySelectorAll('#setTabs button').forEach(b=>b.onclick=()=>{
+  if(b.dataset.t==='x'){ toast('Outside the scope of this prototype'); return; }
+  document.querySelectorAll('#setTabs button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); setTab=b.dataset.t; renderSettings();
+});
+document.querySelectorAll('#projTabs button').forEach(b=>b.onclick=()=>{
+  if(b.dataset.t!=='ms'){ toast('Outside the scope of this prototype'); return; }
+});
+
+const tN=document.getElementById('tNotes'), tC=document.getElementById('tCell'),
+      tR=document.getElementById('tReset'), tE=document.getElementById('tEmpty');
+function syncToggles(){
+  tE.classList.toggle('on',showEmpty);
+  tE.textContent = showEmpty ? 'Volver a datos' : 'Ver estado vacío';
+}
+tN.onclick=()=>{ document.body.classList.toggle('notes'); tN.classList.toggle('on'); };
+tC.onclick=()=>{ cellMode = cellMode==='pct'?'date':'pct'; tC.textContent='Celda: '+(cellMode==='pct'?'%':'fecha'); renderProject(); };
+tR.onclick=()=>{ seed(); showEmpty=false; syncToggles(); go(vS.hidden?'proj':'set'); toast('Data reset · every cell back to +'); };
+tE.onclick=()=>{ showEmpty=!showEmpty; syncToggles(); go('proj'); };
+
+syncToggles();
+go('proj');
+</script>

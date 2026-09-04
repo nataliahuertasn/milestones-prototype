@@ -1,0 +1,556 @@
+<title>Milestone Groups Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+
+<style>
+:root{
+  --ground:#F5F7F9; --surface:#FFFFFF; --surface-2:#EDF1F5; --surface-3:#E3E9F0;
+  --ink:#141A21; --ink-2:#48545F; --ink-3:#7A8794;
+  --rule:#D9E0E8; --rule-2:#C3CDD8;
+  --accent:#1462C4; --accent-soft:#E6EFFB; --accent-line:#A9C9F0;
+  --ok:#1C7A3E; --ok-soft:#E2F1E7; --ok-line:#A6D5B7;
+  --warn:#94600A; --warn-soft:#FBF0DB; --warn-line:#E3C384;
+  --stop:#AF3527; --stop-soft:#FAE8E5; --stop-line:#EAB0A7;
+  --shadow:0 1px 2px rgba(20,26,33,.06), 0 8px 24px -16px rgba(20,26,33,.28);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#111419; --surface:#171B21; --surface-2:#1D232B; --surface-3:#242C36;
+    --ink:#E6EBF1; --ink-2:#A9B4C0; --ink-3:#78848F;
+    --rule:#282F38; --rule-2:#333C47;
+    --accent:#66A6F0; --accent-soft:#16273B; --accent-line:#2C486B;
+    --ok:#63C583; --ok-soft:#13251A; --ok-line:#28492F;
+    --warn:#DFA749; --warn-soft:#251E10; --warn-line:#4A3A1B;
+    --stop:#EF8677; --stop-soft:#2A1613; --stop-line:#502722;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#111419; --surface:#171B21; --surface-2:#1D232B; --surface-3:#242C36;
+  --ink:#E6EBF1; --ink-2:#A9B4C0; --ink-3:#78848F;
+  --rule:#282F38; --rule-2:#333C47;
+  --accent:#66A6F0; --accent-soft:#16273B; --accent-line:#2C486B;
+  --ok:#63C583; --ok-soft:#13251A; --ok-line:#28492F;
+  --warn:#DFA749; --warn-soft:#251E10; --warn-line:#4A3A1B;
+  --stop:#EF8677; --stop-soft:#2A1613; --stop-line:#502722;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15.5px; line-height:1.62; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1060px; margin:0 auto; padding:0 28px 96px}
+@media(max-width:700px){.wrap{padding:0 18px 64px}}
+
+/* ---- masthead ---- */
+.mast{padding:52px 0 30px; border-bottom:2px solid var(--ink); margin-bottom:34px}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin:0 0 14px;
+}
+h1{
+  font-family:Archivo,"IBM Plex Sans",sans-serif; font-weight:700; font-size:clamp(30px,4.6vw,46px);
+  line-height:1.06; letter-spacing:-.022em; margin:0 0 16px; text-wrap:balance;
+}
+.dek{font-size:17px; color:var(--ink-2); max-width:64ch; margin:0}
+.meta{
+  display:flex; flex-wrap:wrap; gap:8px 26px; margin-top:22px;
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-3);
+  letter-spacing:.03em;
+}
+.meta b{color:var(--ink-2); font-weight:500}
+
+/* ---- status chips: epistemic status of each claim ---- */
+.chip{
+  display:inline-flex; align-items:center; gap:6px; vertical-align:middle;
+  font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.09em; text-transform:uppercase;
+  padding:3px 7px 2px; border-radius:3px; border:1px solid; white-space:nowrap;
+}
+.c-ok{color:var(--ok); background:var(--ok-soft); border-color:var(--ok-line)}
+.c-inf{color:var(--warn); background:var(--warn-soft); border-color:var(--warn-line)}
+.c-block{color:var(--stop); background:var(--stop-soft); border-color:var(--stop-line)}
+.c-dec{color:var(--accent); background:var(--accent-soft); border-color:var(--accent-line)}
+
+.legend{
+  display:flex; flex-wrap:wrap; gap:18px 30px; padding:18px 20px; margin:0 0 40px;
+  background:var(--surface); border:1px solid var(--rule); border-radius:6px;
+}
+.legend div{display:flex; gap:9px; align-items:baseline; font-size:13.5px; color:var(--ink-2); flex:1 1 200px}
+
+/* ---- blocker banner ---- */
+.blocker{
+  border:1px solid var(--stop-line); background:var(--stop-soft);
+  border-radius:6px; padding:22px 24px; margin:0 0 40px;
+}
+.blocker h2{
+  font-family:Archivo,sans-serif; font-size:17px; font-weight:600; letter-spacing:-.01em;
+  margin:0 0 6px; color:var(--stop);
+}
+.blocker p{margin:0 0 14px; color:var(--ink-2); font-size:14.5px; max-width:70ch}
+.blocker ol{margin:0; padding-left:20px}
+.blocker li{margin-bottom:12px; font-size:14.5px}
+.blocker li:last-child{margin-bottom:0}
+.blocker strong{color:var(--ink)}
+
+/* ---- sections ---- */
+section{margin:0 0 56px; scroll-margin-top:20px}
+.sec-head{display:flex; gap:16px; align-items:baseline; border-bottom:1px solid var(--rule-2); padding-bottom:10px; margin-bottom:22px}
+.sec-mark{
+  font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:13px; color:var(--accent);
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+  border-radius:3px; padding:2px 7px; flex:none;
+}
+h2.sec{font-family:Archivo,sans-serif; font-weight:600; font-size:24px; letter-spacing:-.018em; margin:0; text-wrap:balance}
+h3{font-family:Archivo,sans-serif; font-weight:600; font-size:16.5px; letter-spacing:-.008em; margin:32px 0 10px; color:var(--ink)}
+h4{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); margin:26px 0 8px}
+p{margin:0 0 14px; max-width:72ch}
+ul,ol{max-width:72ch; padding-left:22px; margin:0 0 14px}
+li{margin-bottom:7px}
+code{
+  font-family:"IBM Plex Mono",monospace; font-size:.87em;
+  background:var(--surface-2); border:1px solid var(--rule); border-radius:3px;
+  padding:1px 5px; color:var(--ink);
+}
+a{color:var(--accent)}
+
+/* ---- tables ---- */
+.tw{overflow-x:auto; margin:0 0 20px; border:1px solid var(--rule); border-radius:6px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:13.5px; min-width:520px}
+th{
+  text-align:left; font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:10.5px;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3);
+  padding:11px 14px; background:var(--surface-2); border-bottom:1px solid var(--rule-2);
+  white-space:nowrap;
+}
+td{padding:10px 14px; border-bottom:1px solid var(--rule); vertical-align:top; color:var(--ink-2)}
+tr:last-child td{border-bottom:none}
+td strong{color:var(--ink); font-weight:600}
+td.num{text-align:right; font-variant-numeric:tabular-nums; font-family:"IBM Plex Mono",monospace}
+td.mono,th.mono{font-family:"IBM Plex Mono",monospace; font-size:12.5px}
+
+/* ---- formula callout ---- */
+.formula{
+  background:var(--surface); border:1px solid var(--ok-line); border-left:4px solid var(--ok);
+  border-radius:5px; padding:22px 24px; margin:22px 0 20px;
+}
+.formula .fx{
+  font-family:"IBM Plex Mono",monospace; font-size:14px; line-height:1.9;
+  background:var(--surface-2); border:1px solid var(--rule); border-radius:4px;
+  padding:14px 16px; margin:0 0 16px; overflow-x:auto; white-space:nowrap;
+}
+.check{display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--ink-2); margin-bottom:8px}
+.check b{color:var(--ok); font-family:"IBM Plex Mono",monospace; flex:none; font-size:12px; padding-top:2px}
+
+/* ---- decision block ---- */
+.decision{
+  background:var(--surface); border:1px solid var(--rule); border-radius:6px;
+  padding:20px 22px; margin:0 0 18px; box-shadow:var(--shadow);
+}
+.decision > .dh{display:flex; gap:12px; align-items:baseline; flex-wrap:wrap; margin-bottom:10px}
+.decision .dt{font-family:Archivo,sans-serif; font-weight:600; font-size:16px; letter-spacing:-.008em}
+.decision p{font-size:14.5px; margin-bottom:10px}
+.rec{
+  border-top:1px dashed var(--rule-2); padding-top:12px; margin-top:14px;
+  font-size:14px; color:var(--ink-2);
+}
+.rec b{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--accent); display:block; margin-bottom:5px;
+}
+
+/* ---- schema ---- */
+.schema{
+  font-family:"IBM Plex Mono",monospace; font-size:12.5px; line-height:1.75;
+  background:var(--surface); border:1px solid var(--rule); border-radius:6px;
+  padding:18px 20px; overflow-x:auto; margin:0 0 18px; color:var(--ink-2);
+  white-space:pre;
+}
+.schema .k{color:var(--accent); font-weight:600}
+.schema .n{color:var(--ink); font-weight:600}
+.schema .c{color:var(--ink-3); font-style:italic}
+
+/* ---- ascii mock ---- */
+.mock{
+  font-family:"IBM Plex Mono",monospace; font-size:12px; line-height:1.7;
+  background:var(--surface-2); border:1px solid var(--rule-2); border-radius:6px;
+  padding:18px 20px; overflow-x:auto; margin:0 0 18px; color:var(--ink);
+  white-space:pre;
+}
+
+/* ---- phase list ---- */
+.steps{counter-reset:s; list-style:none; padding:0; margin:0; max-width:none}
+.steps > li{
+  counter-increment:s; position:relative; padding:18px 20px 18px 62px;
+  background:var(--surface); border:1px solid var(--rule); border-radius:6px; margin-bottom:10px;
+}
+.steps > li::before{
+  content:counter(s); position:absolute; left:18px; top:18px;
+  font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:12px;
+  width:26px; height:26px; display:grid; place-items:center;
+  color:var(--accent); background:var(--accent-soft);
+  border:1px solid var(--accent-line); border-radius:50%;
+}
+.steps .st{font-family:Archivo,sans-serif; font-weight:600; font-size:15.5px; display:block; margin-bottom:4px}
+.steps p{font-size:14px; margin:0; color:var(--ink-2)}
+.steps ul{font-size:14px; margin:8px 0 0}
+
+.ask{
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+  border-radius:6px; padding:22px 24px; margin:44px 0 0;
+}
+.ask h2{font-family:Archivo,sans-serif; font-size:19px; font-weight:600; margin:0 0 10px; letter-spacing:-.012em}
+.ask ol{margin-bottom:0}
+.ask li{font-size:14.5px}
+
+hr.soft{border:none; border-top:1px solid var(--rule); margin:34px 0}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">Project Agenda · Analysis before implementation</p>
+  <h1>Milestone Groups, Type of Scope &amp; Phase Weight</h1>
+  <p class="dek">Technical and functional analysis of the proposed rework of the project <strong>Milestones</strong> view — reconstructed from the interface, because the source code is not reachable from this machine.</p>
+  <div class="meta">
+    <span><b>Prepared</b> 4 Sep 2026</span>
+    <span><b>Sources</b> 2 PDF references (14 + 8 screens)</span>
+    <span><b>Code access</b> none</span>
+    <span><b>Status</b> awaiting approval + repo</span>
+  </div>
+</header>
+
+<div class="blocker">
+  <h2>Two things blocked me — read these first</h2>
+  <p>You asked me to analyse the existing code before proposing anything. I could not, and I want to be explicit about that rather than invent an architecture and present it as analysis.</p>
+  <ol>
+    <li><strong>There is no source code in this environment.</strong> The working folder <code>MILESTONES CLAUDE CODE</code> is empty, and the whole <code>PROJECT AGENDA</code> tree contains only business documents — Excel, PDF, Word. I searched the user profile for a repository (<code>.git</code>, <code>package.json</code>) and found none. So sections&nbsp;A–D below are <em>reconstructed from the screenshots</em>, not read from models, services or endpoints. Every architectural claim in them is an inference that a developer must confirm.</li>
+    <li><strong>I cannot read the video.</strong> <code>Grabación 2026-09-04 105641.mp4</code> is 205&nbsp;MB of screen capture with your spoken guidance. I have no audio-transcription capability, and this machine has no <code>ffmpeg</code> to even extract the audio track. Whatever you explained in it is not in this analysis. If it contains rules that contradict what follows, mine is the version that is wrong.</li>
+  </ol>
+</div>
+
+<div class="legend">
+  <div><span class="chip c-ok">Verified</span><span>Proven arithmetically from the reference material.</span></div>
+  <div><span class="chip c-inf">Inferred</span><span>Read off the UI. Plausible, unconfirmed.</span></div>
+  <div><span class="chip c-block">Blocked</span><span>Cannot be answered without the code.</span></div>
+  <div><span class="chip c-dec">Decision</span><span>Needs your call before build.</span></div>
+</div>
+
+<p>What I <em>did</em> have was richer than expected. Besides the PDF you attached, the folder <code>MAQUETAS DESARROLLOS/Milestone</code> holds an earlier specification — <em>MEJORAS VISTA MILESTONE</em>, dated 2 July — whose mockups let me recover the progress formula exactly. That earlier document also conflicts with today's brief in three places, which I flag in section&nbsp;E.</p>
+
+<!-- ============ A ============ -->
+<section id="a">
+  <div class="sec-head"><span class="sec-mark">A</span><h2 class="sec">Current architecture, as far as the interface reveals it</h2></div>
+
+  <p><span class="chip c-inf">Inferred</span> Project Agenda is a web application by Boston Project, LLC (footer: <em>Copyright © SIGMA 2026</em>). The UI is unambiguously <strong>Angular Material</strong>: <code>mat-tab-group</code> navigation, floating-label <code>mat-form-field</code> inputs with the underline treatment, the Material icon set (pencil, trash, eye, drag handle), and the standard raised primary button in Material blue. Any new dialog should be a <code>MatDialog</code> with the same field styling, and any new column a column in the existing table — not a new screen.</p>
+
+  <h4>Navigation paths that matter here</h4>
+  <div class="tw"><table>
+    <thead><tr><th>Path</th><th>What it holds</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">Settings › Quotes › <strong>MILESTONES</strong></td><td>The <strong>Phase</strong> catalogue. Columns: drag-handle, <code>INDEX</code>, <code>NAME</code>, <code>DESCRIPTION</code>, <code>ACTIONS</code>. Rows: Kick Off, SD, CP, Material Procurement, Fabrication Drawings, Production, Installation Drawings, Shipping. Dialog has Name* + Description + Save. <em>This is where <code>WEIGHT (%)</code> is to be added</em> — your PDF marks the position in red, between DESCRIPTION and ACTIONS.</td></tr>
+      <tr><td class="mono">Settings › Quotes › <strong>PRODUCT TYPES</strong></td><td>Catalogue with <code>NAME</code> + <code>DESCRIPTION</code> (Architectural Louver, Perforated Panel Screen, Solid Panel Screen…). <strong>My candidate for "Type of Scope"</strong> — see section D.</td></tr>
+      <tr><td class="mono">Project › <strong>MILESTONES</strong></td><td>The view being reworked. Sits beside PROJECT DETAILS, QUOTES, TASKS, FOLLOW UP, STOCK, PURCHASES, OPERATIONS, BALANCE TO BILL FORECAST, INVOICES, TIME REPORTS, LOGS.</td></tr>
+      <tr><td class="mono">Project › <strong>QUOTES</strong></td><td>Quotes (e.g. <code>4436.11</code>) expand into line items: <code>ROW</code>, <code>COST</code> <em>(the description)</em>, <code>QTY</code>, <code>COST</code>, <code>MARGIN</code>, <code>GROSS MARGIN</code>, <code>PRICE PER QUANTITY</code>, <code>SALE PRICE</code>. <strong>These line items are the Scopes.</strong></td></tr>
+    </tbody>
+  </table></div>
+
+  <p>Note the naming collision you should be aware of when briefing developers: the Phase catalogue is itself called <strong>“Milestones”</strong> in Settings. In this document <em>Phase</em> always means a row of that catalogue, and <em>Milestone</em> always means one cell — one scope's progress in one phase.</p>
+</section>
+
+<!-- ============ B ============ -->
+<section id="b">
+  <div class="sec-head"><span class="sec-mark">B</span><h2 class="sec">Current data model, reconstructed</h2></div>
+
+  <p><span class="chip c-inf">Inferred</span> Field names are mine; only the relationships are evidenced.</p>
+
+  <div class="schema"><span class="n">Project</span>
+  └─ has many <span class="n">Quote</span>          <span class="c">— Project › QUOTES tab</span>
+        └─ has many <span class="n">Scope</span>     <span class="c">— the quote line items (ROW / COST / QTY / SALE PRICE)</span>
+
+<span class="n">Phase</span>  <span class="c">(“Milestone” in Settings › Quotes › MILESTONES)</span>
+  ├─ <span class="k">index</span>        <span class="c">int, drag-reorderable — drives column order in the grid</span>
+  ├─ <span class="k">name</span>         <span class="c">string, required</span>
+  └─ <span class="k">description</span>  <span class="c">string, optional</span>
+                                   <span class="c">← weight (%) to be ADDED here</span>
+
+<span class="n">Milestone</span>  <span class="c">one cell of the grid = one (Scope × Phase) intersection</span>
+  ├─ <span class="k">scope_id</span>
+  ├─ <span class="k">phase_id</span>
+  ├─ <span class="k">date</span>        <span class="c">“Milestone Date *” — required</span>
+  ├─ <span class="k">percentage</span>  <span class="c">“Percentage *” — required</span>
+  ├─ <span class="k">files[]</span>     <span class="c">attachments</span>
+  └─ <span class="k">notes</span>       <span class="c">“Notes *”</span>
+
+<span class="n">ProductType</span>  <span class="c">Settings › Quotes › PRODUCT TYPES — name + description</span>
+</div>
+
+  <p>The evidence for the <code>Milestone</code> shape is the edit dialog in your PDF, titled <em>“Scope VERTICAL FINS EAST TOWER 8' X 2': TWO FINS @ 30° – Material Procurement”</em> — scope name and phase name concatenated. It carries Milestone Date*, Percentage*, Files and Notes*. So <strong>a percentage already exists per cell today</strong>; the grid simply displays the date instead. That matters a great deal in section G.</p>
+</section>
+
+<!-- ============ C ============ -->
+<section id="c">
+  <div class="sec-head"><span class="sec-mark">C</span><h2 class="sec">Current Milestones logic — including the progress formula</h2></div>
+
+  <h4>The grid today</h4>
+  <p>Four KPI tiles (<code>SCOPES 18</code>, <code>MILESTONES 34</code>, <code>COMPLETED 18</code>, <code>PERCENTAGE 82.3%</code>) over a table of <code>QUOTE</code> · <code>SCOPE</code> · <code>PRICE</code> · then one column per Phase. One row per scope, pulled automatically from every quote on the project — which is exactly the behaviour you want removed. Cells show a date, coloured <span style="color:var(--ok);font-weight:600">green</span> when met and <span style="color:var(--stop);font-weight:600">red</span> when not, with a pencil to edit and an eye to view; empty cells show a <code>+</code>.</p>
+  <p>The tile arithmetic does not close on its own numbers — 18 completed of 34 milestones is 53%, not the 82.3% displayed — so <code>PERCENTAGE</code> is already something more than a count. Almost certainly it is the weighted figure below, computed with weights that are today implicit.</p>
+
+  <h3>The progress formula, recovered</h3>
+  <p><span class="chip c-ok">Verified</span> The July mockup prints the weights in the column headers (<code>KICK OFF 5%</code>, <code>SD 5%</code>, <code>CP 5%</code>, <code>MATERIAL PROCUREMENT 15%</code>, <code>FABRICATION DRAWINGS 15%</code>, <code>PRODUCTION 30%</code>, <code>INSTALLATION DRAWINGS 15%</code>, <code>SHIPPING 10%</code> — summing to 100) beside a <code>PROGRESS</code> column. I reproduced that column exactly:</p>
+
+  <div class="formula">
+    <div class="fx">progress(scope) = Σ<sub>phases</sub> ( milestone.percentage × phase.weight ) ÷ Σ<sub>phases</sub> phase.weight</div>
+    <div class="check"><b>✓ ROW 8244</b><span>100·5 + 80·5 + 20·5 + 70·15 + 40·15 + 70·30 + 15·15 + 20·10 = 5175 ÷ 100 = <strong>51.75</strong> → mockup prints <strong>52%</strong></span></div>
+    <div class="check"><b>✓ ROW 7965</b><span>100·5 + 15·5 + 25·5 + 70·15 + 15·15 + 50·30 + 35·15 + 15·10 = 4150 ÷ 100 = <strong>41.5</strong> → mockup prints <strong>41%</strong></span></div>
+  </div>
+
+  <p>This is the single most valuable thing to come out of the reference material. It means <strong>Weight is not a new calculation — it is the exposure of a constant that is already baked into the code somewhere.</strong> A developer's first job is to find where those 5 / 5 / 5 / 15 / 15 / 30 / 15 / 10 figures currently live: a hard-coded array, a per-phase column that Settings simply does not render, or a formula that assumes equal weighting. Which one it is changes the migration entirely, and I cannot tell from outside.</p>
+
+  <h3>How a Group consolidates its Scopes</h3>
+  <p><span class="chip c-ok">Verified</span> The July mockup also shows a group row above its children, and its per-phase figures are a <strong>price-weighted average</strong>, not a plain one:</p>
+
+  <div class="formula">
+    <div class="fx">group.phase% = Σ ( scope.milestone.percentage × scope.price ) ÷ Σ scope.price</div>
+    <div class="check"><b>✓ SD</b><span>(100·10 647 385 + 80·90 917 123 + 15·13 245 354 + 35·7 360 333) ÷ 122 170 195 = <strong>71.98</strong> → mockup prints <strong>72%</strong> — a plain average would give 57.5%</span></div>
+    <div class="check"><b>✓ CP</b><span>(100·10 647 385 + 20·90 917 123 + 25·13 245 354 + 20·7 360 333) ÷ 122 170 195 = <strong>27.51</strong> → mockup prints <strong>28%</strong></span></div>
+  </div>
+
+  <p>The group's own <code>PROGRESS</code> then comes from applying the phase-weight formula to that consolidated row (66.35 → 67% in the mockup ✓). So the two formulas compose cleanly: <em>price-weight across scopes, phase-weight across phases.</em></p>
+  <p>One caveat I have to raise. A second mockup block includes a cancelled scope with a <strong>negative</strong> price (<code>-13 245 354 COP</code>) and no percentages, and there the printed group figures reconcile with no formula I can construct. Negative-price lines break price-weighting — they can drag a consolidated percentage above 100 or below zero. This is a real defect waiting to happen, not a mockup typo; see decision 4.</p>
+</section>
+
+<!-- ============ D ============ -->
+<section id="d">
+  <div class="sec-head"><span class="sec-mark">D</span><h2 class="sec">Type of Scope — where does it actually live?</h2></div>
+
+  <p><span class="chip c-block">Blocked</span> This is the one thing I most need you to confirm, because everything in section E hangs off it.</p>
+  <p>Your brief says a <em>Type of Scope</em> catalogue already exists in Settings and must be reused, and gives examples: Curtain Wall, Windows, Doors, Handrails. In the screenshots the only catalogue of that shape is <strong>Settings › Quotes › PRODUCT TYPES</strong> — but its values are Architectural Louver, Perforated Panel Screen, Solid Panel Screen. Same idea, different vocabulary.</p>
+  <p>Three possibilities, and they lead to different work:</p>
+  <div class="tw"><table>
+    <thead><tr><th>If…</th><th>Then</th></tr></thead>
+    <tbody>
+      <tr><td><strong>PRODUCT TYPES <em>is</em> Type of Scope</strong>, and your examples were generic</td><td>Reuse it as-is. The Group dialog reads the same endpoint the quote editor already reads. No new catalogue, no new Settings tab. <em>This is what I have assumed.</em></td></tr>
+      <tr><td><strong>Type of Scope is a different catalogue</strong> not visible in the four Settings screens I have</td><td>Point me at it — the tab strip is scrolled and several tabs are cut off on both sides. Nothing else changes.</td></tr>
+      <tr><td><strong>It does not exist yet</strong></td><td>Then your brief's rule "must reuse the existing catalogue" cannot be satisfied and we would in fact be creating one — a different, larger piece of work that needs its own Settings tab, and which contradicts acceptance criterion 41.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Note also that a Scope today shows <em>no</em> type column anywhere I can see — neither in the quote line items nor in the milestone grid. That is consistent with your instruction that Type of Scope is a property of the <em>Group</em>, not of the Scope, and it means we are not overriding anything that already exists on the quote. Good.</p>
+</section>
+
+<!-- ============ E ============ -->
+<section id="e">
+  <div class="sec-head"><span class="sec-mark">E</span><h2 class="sec">Proposed architecture</h2></div>
+
+  <h3>New persistence — two tables, nothing else</h3>
+  <div class="schema"><span class="n">milestone_group</span>
+  ├─ <span class="k">id</span>
+  ├─ <span class="k">project_id</span>        <span class="c">FK → project    (groups are scoped to a project, not a quote)</span>
+  ├─ <span class="k">name</span>              <span class="c">string, required — free text</span>
+  ├─ <span class="k">product_type_id</span>   <span class="c">FK → the Type of Scope catalogue, NULLABLE (see migration)</span>
+  ├─ <span class="k">index</span>             <span class="c">int — display order, same pattern as phase.index</span>
+  └─ <span class="k">created_at / updated_at</span>
+
+<span class="n">milestone_group_scope</span>   <span class="c">join</span>
+  ├─ <span class="k">group_id</span>          <span class="c">FK, cascade delete</span>
+  ├─ <span class="k">scope_id</span>          <span class="c">FK, NO cascade from quote — see risk H-3</span>
+  ├─ <span class="k">index</span>             <span class="c">int</span>
+  └─ <span class="k">UNIQUE (scope_id)</span>  <span class="c">← enforces one-group-per-scope. See decision 2.</span>
+</div>
+
+  <p><strong>The existing <code>Milestone</code> table is not touched.</strong> Progress stays where it is — on the (scope × phase) cell. Groups are a presentation and roll-up layer laid over data that already exists. That is what protects existing projects, and it is why I recommend against storing progress on the group itself (decision 3).</p>
+
+  <h3>Phase weight</h3>
+  <div class="schema"><span class="n">phase</span>
+  └─ + <span class="k">weight</span>  <span class="c">decimal(5,2), NOT NULL, default 0 — percentage points, e.g. 30.00</span>
+</div>
+  <p>Backfilled at migration with whatever constants the code uses today (section C), so that the day the column ships, every existing project's percentage is unchanged. If no such constants exist and progress is currently unweighted, backfill <code>100 ÷ count(phases)</code> — also a no-op.</p>
+
+  <h3>Pending-scope count — derived, never stored</h3>
+  <div class="schema"><span class="c">pending = scopes of all quotes on the project
+          WHERE scope_id NOT IN (SELECT scope_id FROM milestone_group_scope
+                                 JOIN milestone_group USING(group_id)
+                                 WHERE project_id = :project)</span>
+</div>
+  <p>One <code>LEFT JOIN … IS NULL</code>. Every one of your eight triggers in §25 — new quote, new scope, group created, scopes added, scopes removed, group deleted — is satisfied for free, because the number is never cached. Storing it would create a second source of truth that has to be invalidated from the quote module, which is precisely the coupling to avoid. It ships on the same payload as the grid.</p>
+
+  <h3>Three conflicts with the July specification</h3>
+  <p>The earlier <em>MEJORAS VISTA MILESTONE</em> document describes the same feature differently. Somebody should decide formally which supersedes, because both are in the same folder and a developer will find both.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Topic</th><th>July spec</th><th>Today's brief</th></tr></thead>
+    <tbody>
+      <tr><td><strong>How a group is made</strong></td><td>Tick checkboxes on scope rows, then a ⋮ menu → <em>New Group / Add to Group / Remove from Group</em>. All scopes visible by default.</td><td>Grid starts empty; an explicit <em>Create Group</em> button opens a dialog with Name + Type of Scope + multi-select.</td></tr>
+      <tr><td><strong>Type of Scope</strong></td><td>Not mentioned. Groups have a name only.</td><td>Required single-select on the group, plus a new grid column.</td></tr>
+      <tr><td><strong>Exclude from Progress</strong></td><td>A per-scope flag excluding it from the project percentage, reversible.</td><td>Not mentioned. An unassigned scope is now implicitly excluded.</td></tr>
+    </tbody>
+  </table></div>
+  <p>My reading: today's brief supersedes, and the July checkbox/⋮ interaction should be kept as a <em>second</em> way to add already-visible scopes to a group — it is genuinely better than the dialog for the "I have 40 scopes and want them in four groups" case. But <em>Exclude from Progress</em> is a real question, not an omission: under the new model, does a scope inside a group ever need to be excluded from the percentage? If cancelled lines like that <code>-13 245 354</code> row exist, I think yes.</p>
+</section>
+
+<!-- ============ Decisions ============ -->
+<section id="dec">
+  <div class="sec-head"><span class="sec-mark">?</span><h2 class="sec">Decisions I need from you</h2></div>
+
+  <div class="decision">
+    <div class="dh"><span class="chip c-dec">Decision 1</span><span class="dt">What does a grid cell show — the date or the percentage?</span></div>
+    <p>Today's grid shows dates with red/green status. The July mockup shows percentages. The underlying record has both. Showing percentages is what makes the weighted roll-up legible; showing dates is what your team is trained on and what carries the schedule signal.</p>
+    <div class="rec"><b>Recommendation</b>Percentage as the cell value, with the date's red/green colour retained as the cell's status treatment, and the date on hover. You lose nothing and the group row becomes meaningful. But this changes a screen people use daily — your call, not mine.</div>
+  </div>
+
+  <div class="decision">
+    <div class="dh"><span class="chip c-dec">Decision 2</span><span class="dt">Can one Scope belong to two Groups?</span></div>
+    <p>You asked me to validate this (§12). If it is allowed: the pending count still works, but the project percentage double-counts that scope's price, and "remove from group" becomes ambiguous.</p>
+    <div class="rec"><b>Recommendation</b>No — enforce it with a <code>UNIQUE</code> constraint on <code>scope_id</code>. A group is an organisational bucket, and buckets that overlap make the consolidation arithmetic unsound. "Move to another group" covers the real need. This also makes the pending count a clean partition: every scope is in exactly one group, or pending.</div>
+  </div>
+
+  <div class="decision">
+    <div class="dh"><span class="chip c-dec">Decision 3</span><span class="dt">Group-level progress: stored, or written down to the scopes?</span></div>
+    <p>Your §13 Option A says progress can be recorded "directly on the Group". The July spec is more specific: entering progress on the group row <em>applies it to every child scope</em> — a bulk fill, not a separate value.</p>
+    <div class="rec"><b>Recommendation</b>The July reading. Keep one source of truth — the (scope × phase) cell — and make the group row a bulk-edit control that writes to its children, then reads back as the price-weighted roll-up. Storing a group percentage alongside child percentages creates two numbers that disagree the moment anyone edits a child, and there is no non-arbitrary rule for which wins.</div>
+  </div>
+
+  <div class="decision">
+    <div class="dh"><span class="chip c-dec">Decision 4</span><span class="dt">Cancelled and negative-price scopes</span></div>
+    <p>Price-weighting is undefined when prices can be negative, and your data contains them (a cancelled line at <code>-13 245 354 COP</code>). A negative weight inverts that scope's contribution: 0% progress on a negative line <em>raises</em> the group average.</p>
+    <div class="rec"><b>Recommendation</b>Exclude scopes with <code>price ≤ 0</code> from the weighting denominator while still showing them in the group (greyed, no progress input). If cancelled lines are flagged in the data rather than merely negative, use that flag instead. Either way this needs to be a stated rule, because the mockup does not have one.</div>
+  </div>
+
+  <div class="decision">
+    <div class="dh"><span class="chip c-dec">Decision 5</span><span class="dt">Must Phase weights sum to exactly 100?</span></div>
+    <p>Because the formula divides by <code>Σ weight</code>, a total of 90 or 110 still produces a sensible number — it self-normalises. So a hard block is not needed for correctness, and a hard block makes editing miserable: you cannot get from one valid configuration to another without passing through an invalid one.</p>
+    <div class="rec"><b>Recommendation</b>Hard-validate the field (numeric, 0–100, up to 2 decimals, empty → 0, negatives rejected inline). Soft-validate the total: a live running sum under the table, amber when ≠ 100, with the note that progress is normalised over the total. Save is never blocked. Weights are global, so changing one silently moves every project's percentage — the confirmation dialog should say so.</div>
+  </div>
+</section>
+
+<!-- ============ F ============ -->
+<section id="f">
+  <div class="sec-head"><span class="sec-mark">F</span><h2 class="sec">Required changes</h2></div>
+  <div class="tw"><table>
+    <thead><tr><th>Layer</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Database</strong></td><td>Add <code>phase.weight</code> (+ backfill). Create <code>milestone_group</code> and <code>milestone_group_scope</code>. Unique index on <code>milestone_group_scope.scope_id</code>. Index on <code>milestone_group.project_id</code>.</td></tr>
+      <tr><td><strong>Models</strong></td><td>New <code>MilestoneGroup</code> with <code>hasMany Scope</code> through the join and <code>belongsTo</code> the Type of Scope catalogue. Add <code>weight</code> to the Phase model and to its Settings serializer.</td></tr>
+      <tr><td><strong>Endpoints</strong></td><td><code>GET/POST /projects/{id}/milestone-groups</code>, <code>PATCH/DELETE /milestone-groups/{id}</code>, <code>POST/DELETE /milestone-groups/{id}/scopes</code>, and <code>GET /projects/{id}/scopes?unassigned=true</code> for the alert and the picker. Extend the existing Phase settings endpoint with <code>weight</code>.</td></tr>
+      <tr><td><strong>Services</strong></td><td>The grid payload changes shape: currently a flat scope list, now groups each carrying their scopes plus a <code>pendingScopeCount</code>. Progress calculation moves the weights from wherever they are hard-coded to the phase records, and gains the price-weighted group roll-up.</td></tr>
+      <tr><td><strong>Validation</strong></td><td>Group name required and unique within the project. Type of Scope required on create. At least one scope required on create (otherwise the empty state is misleading). Scope must belong to a quote on this project. Weight rules per decision 5.</td></tr>
+      <tr><td><strong>Permissions</strong></td><td><strong>None new.</strong> Group CRUD reuses whatever already gates editing a milestone on the Project › Milestones tab; Weight reuses whatever gates the Settings › Quotes › Milestones tab, which today already permits creating and deleting phases — a strictly larger power than editing a number on one. Adding permissions would mean every existing role needs re-granting, which is a rollout problem for no security gain. There is a Permissions section in Settings I could not open; a developer should confirm the two capability names.</td></tr>
+      <tr><td><strong>Frontend</strong></td><td>New: Create/Edit Group dialog, pending-scope alert, group row with expand/collapse. Changed: the milestones table becomes two-level; Settings phase table and dialog gain a Weight field.</td></tr>
+      <tr><td><strong>Migration</strong></td><td>See H-1. This is the part that carries real risk.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============ G ============ -->
+<section id="g">
+  <div class="sec-head"><span class="sec-mark">G</span><h2 class="sec">UI changes</h2></div>
+
+  <h4>Milestones — empty state</h4>
+  <div class="mock">┌──────────────────────────────────────────────────────────────────────┐
+│  ⚠  There are 5 scopes pending to be assigned.        REVIEW         │   ← mat-banner, amber
+├──────────────────────────────────────────────────────────────────────┤
+│  ▤ SCOPES 0    ▶ MILESTONES 0    ✔ COMPLETED 0    % PERCENTAGE 0.0 % │   ← existing tiles, kept
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│                    No groups created yet.                            │
+│                    [ + CREATE GROUP ]                                │   ← raised primary, Material blue
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘</div>
+  <p>Keep the four KPI tiles — they are the view's signature and they read correctly at zero. The <em>Review</em> action on the alert should open the Create Group dialog with the multi-select <strong>pre-filtered to the unassigned scopes</strong> and a toggle to show all: it answers "which ones?" without a new screen, which is what §11 asked for.</p>
+
+  <h4>Milestones — populated</h4>
+  <div class="mock">QUOTE          GROUP / SCOPE                      TYPE OF SCOPE    PRICE       KICK OFF 5%   SD 5%   …   PROGRESS
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+▾ 4436·7981    Curtain Wall                       Curtain Wall     122 170 195     100%        72%     …      67%
+    7981         VERTICAL FINS EAST TOWER…                          10 647 385     100%       100%     …     100%
+    8244         ALUMINUM FINS @ EAST BUILDING…                     90 917 123     100%        80%     …      52%
+▸ 4436         Windows                            Windows           45 220 000      80%        40%     …      38%</div>
+  <p>Four notes on this. <strong>(i)</strong> The group's <code>QUOTE</code> cell lists every quote its scopes come from — a group can legitimately span quotes, and the July mockup does exactly this. <strong>(ii)</strong> Type of Scope appears on the group row only, blank on children, as you specified. <strong>(iii)</strong> Weights sit in the column headers next to the phase name — this is from the July mockup and it is a genuinely good idea: it makes the weighting visible at the point of use without another screen. <strong>(iv)</strong> Expand/collapse is the standard Material chevron with indented children — the same pattern the Project › Quotes tab already uses to expand a quote into its lines, so it is not a new interaction for anyone.</p>
+
+  <h4>Create Group dialog</h4>
+  <div class="mock">✕  Create Group                                              [ SAVE ]
+
+   Group Name *
+   ────────────────────────────────────────────────
+
+   Type of Scope *
+   [ Select Type of Scope                        ▾ ]
+
+   Scopes *                          ☐ Show scopes already in a group
+   ┌────────────────────────────────────────────────┐
+   │ 🔍 Filter                                      │
+   │ ☑ 7981 · VERTICAL FINS EAST TOWER 8' X 2'…     │
+   │ ☑ 8244 · ALUMINUM FINS @ EAST BUILDING 7TH FL  │
+   │ ☐ 7965 · FINS CEILING @ ELEVATOR LOBBY         │
+   └────────────────────────────────────────────────┘
+   3 of 18 scopes selected · 5 pending</div>
+  <p>Same shell as the existing Milestone dialog in Settings (✕ title bar, floating-label fields, Save top-right). The scope list is <em>filterable but never restrictively filtered</em> per your §4 — the "already in a group" toggle is off by default, and choosing a scope that belongs elsewhere prompts to move it rather than silently failing (decision 2).</p>
+
+  <h4>Settings › Quotes › Milestones</h4>
+  <div class="mock">MILESTONES  [+ NEW]
+      INDEX   NAME                    DESCRIPTION      WEIGHT (%)   ACTIONS
+  ⣿     1     Kick Off                                     5.00      ✎  🗑
+  ⣿     2     SD                                           5.00      ✎  🗑
+  ⣿     3     CP                                           5.00      ✎  🗑
+  ⣿     4     Material Procurement                        15.00      ✎  🗑
+  …
+                                            Total    ⚠  95.00 %      ← amber when ≠ 100</div>
+  <p>Exactly where your PDF marks it in red. The Weight field is added to the existing Name/Description dialog as a third field — <code>type="number"</code>, suffix <code>%</code>, right-aligned, tabular figures. No new screen, no new tab.</p>
+</section>
+
+<!-- ============ H ============ -->
+<section id="h">
+  <div class="sec-head"><span class="sec-mark">H</span><h2 class="sec">Risks</h2></div>
+
+  <h3>H-1 · Existing projects go blank on deploy <span class="chip c-block">highest</span></h3>
+  <p>This is the one that will hurt. The moment the grid stops auto-loading scopes, every project that has milestone data shows an empty Milestones tab. No row is deleted — the <code>Milestone</code> records are untouched — but to a Project Manager it is indistinguishable from losing months of work, and it will be reported as data loss within the hour.</p>
+  <p><strong>Mitigation: backfill one group per existing project.</strong> For every project having at least one <code>Milestone</code> record, create a group named after the project (or “All Scopes”), <code>product_type_id = NULL</code>, containing every scope that has at least one milestone. Those projects then open expanded and look almost identical to today, with their pending count showing whatever scopes were never touched. It is reversible, non-destructive, and it turns a migration into a no-op from the user's side.</p>
+  <p>This is why <code>product_type_id</code> must be nullable in the schema — we cannot invent a Type of Scope for migrated groups, and forcing one would mean guessing. The field is required in the <em>create</em> form, optional in the <em>column</em>, and migrated groups show it blank until a PM fills it in.</p>
+
+  <h3>H-2 · The weight constants may not exist</h3>
+  <p>Section C proves weights are applied today. It does not prove they are stored. If they are a hard-coded array, moving them to the database is a behaviour change for every project simultaneously — safe only if the backfill reproduces them exactly. If progress turns out to be computed some other way and my two arithmetic checks were coincidence, the whole of section C needs redoing against the code. <em>Confirm before writing the migration.</em></p>
+
+  <h3>H-3 · Deleting a quote</h3>
+  <p>If a quote is deleted or a line removed, orphaned rows in <code>milestone_group_scope</code> would break the group roll-up. Whatever the quote module does today to <code>Milestone</code> records must be mirrored — which I cannot see. If quotes are soft-deleted, the pending count must exclude soft-deleted scopes or it will report phantom pending work forever.</p>
+
+  <h3>H-4 · Weight is global, progress is per-project</h3>
+  <p>One PM editing weights in Settings moves the reported percentage of every project in the company, including closed ones and anything already reported to a client. Worth a confirmation dialog naming the count of affected projects; worth asking whether weights should eventually be snapshotted per project. Out of scope now, but it should be a conscious deferral rather than an oversight.</p>
+
+  <h3>H-5 · Naming</h3>
+  <p>"Milestones" already means the Phase catalogue in Settings. Adding "Milestone Group" gives the word three meanings. Consider labelling the Settings tab <em>Phases</em> as part of this work — a one-word change while that screen is already open.</p>
+</section>
+
+<!-- ============ I ============ -->
+<section id="i">
+  <div class="sec-head"><span class="sec-mark">I</span><h2 class="sec">Implementation plan</h2></div>
+  <ol class="steps">
+    <li><span class="st">Confirm the unknowns — before any code</span><p>Type of Scope catalogue identity (D); where the phase weights live today (C, H-2); the two permission capability names; quote-deletion behaviour (H-3). Roughly half a day with the repo open. Everything below is provisional until this is done.</p></li>
+    <li><span class="st">Phase Weight, shipped alone</span><p>Column, migration with backfill, Settings table column, dialog field, validation, running total. Independently valuable, independently releasable, and it proves the progress formula against real data before anything else is built on it. If percentages move for any project after this ships, we found the problem while it was still cheap.</p></li>
+    <li><span class="st">Groups — persistence and API</span><p>Both tables, models, the six endpoints, the derived pending-scope query. Behind a feature flag; no UI yet.</p></li>
+    <li><span class="st">Backfill migration for existing projects</span><p>H-1, run against a restored copy of production first. Verify: every project's Milestones tab renders the same rows and the same percentage as before. This is the gate — do not proceed until it passes.</p></li>
+    <li><span class="st">Milestones grid, two levels</span><p>Group rows, expand/collapse, Type of Scope column, price-weighted roll-up, empty state, Create/Edit Group dialog, add/remove scopes.</p></li>
+    <li><span class="st">Pending-scope alert</span><p>Banner, live count, Review action opening the pre-filtered picker.</p></li>
+    <li><span class="st">Group-level progress entry</span><p>Bulk write-down to child scopes per decision 3. Last, because it is the only step that writes to existing milestone data and it benefits from everything above being settled.</p></li>
+  </ol>
+  <p style="margin-top:20px">Steps 2 and 3 are independent and can run in parallel. Step 4 is the only irreversible one.</p>
+</section>
+
+<div class="ask">
+  <h2>What I need to continue</h2>
+  <ol>
+    <li><strong>Access to the repository</strong> — clone it, or point this session at the folder. Without it, sections A–D stay guesses and I should not be writing code against them.</li>
+    <li><strong>Confirm the Type of Scope catalogue</strong> (section D). Is it <code>PRODUCT TYPES</code>?</li>
+    <li><strong>The video's content, in writing</strong> — or tell me the key points. I could not hear it.</li>
+    <li><strong>Your call on decisions 1–5.</strong></li>
+    <li><strong>Is the July <em>MEJORAS VISTA MILESTONE</em> spec superseded?</strong> Particularly <em>Exclude from Progress</em>.</li>
+  </ol>
+  <p style="margin:14px 0 0; font-size:14.5px">If getting the repository here is difficult, there is a useful alternative given this folder is <code>MAQUETAS DESARROLLOS</code>: I can build a clickable HTML mockup of the new Milestones view and the Settings Weight column — real interactions, real Material styling, no backend — for your developers to build against. That needs none of the code access above. Say the word.</p>
+</div>
+
+</div>
