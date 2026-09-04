@@ -7,7 +7,7 @@ de Project Agenda.
 
 | Archivo | Qué es |
 | --- | --- |
-| `milestones-prototype.html` | Maqueta navegable. Se abre directamente en el navegador, sin servidor ni dependencias. |
+| `index.html` | Maqueta navegable. Se abre directamente en el navegador, sin servidor ni dependencias. |
 | `milestones-analysis.html` | Análisis técnico previo a la implementación: arquitectura actual reconstruida, fórmulas de progreso recuperadas, modelo de datos propuesto, riesgos y plan por etapas. |
 
 Ambos son HTML autocontenidos. Ábrelos con doble clic.
@@ -66,3 +66,14 @@ El detalle de cada una está en `milestones-analysis.html`.
 El análisis se hizo **sin acceso al código fuente**. La arquitectura actual está
 reconstruida a partir de capturas de la aplicación, así que todo lo descrito
 como "actual" debe verificarse contra el repositorio real antes de implementar.
+
+## Publicación
+
+`index.html` es la maqueta, servida en la raíz. Con GitHub Pages activo
+(*Settings › Pages › Deploy from a branch › main / root*) queda accesible en:
+
+    https://nataliahuertasn.github.io/milestones-prototype/
+
+y el análisis en `/milestones-analysis.html`.
+
+Un sitio de GitHub Pages es público: cualquiera con el enlace puede abrirlo.
