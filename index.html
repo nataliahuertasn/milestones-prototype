@@ -381,7 +381,6 @@ body:not(.notes) .notepanel{display:none}
     <button id="tNotes">Notas de spec</button>
     <button id="tCell">Celda: %</button>
     <button id="tReset">Reiniciar datos</button>
-    <button id="tEmpty">Ver estado vacío</button>
   </div>
 
   <div class="topbar">
@@ -523,15 +522,11 @@ let phases, groups, ms, seq;
 function seed(){
   phases = PHASES.map(p=>({...p}));
   types  = TYPES.map(t=>({...t}));
-  // Los scopes de Milestones se muestran recogidos: sólo el consolidado, como un group de Excel.
-  groups = [
-    // Todos abren sin avances: cada celda muestra "+" hasta que el usuario la diligencia
-    {id:'g0',name:'Handrails',typeId:'t7',scopeIds:['s17','s05','s06'],open:false},
-    {id:'g1',name:'Aluminum Fins',typeId:'t1',scopeIds:['s01','s02','s03','s04'],open:false},
-    {id:'g2',name:'Curtain Wall',typeId:'t4',scopeIds:['s11','s12','s13'],open:false},
-    {id:'g3',name:'Canopy',typeId:'t3',scopeIds:['s08','s09','s10'],open:false},
-  ];
-  seq = 4;
+  // Los scopes se muestran recogidos: sólo el consolidado, como un group de Excel.
+  // La vista arranca SIN scopes: es el Project Manager quien decide qué llevar
+  // a Milestones. Ningún item se carga automáticamente desde las quotes.
+  groups = [];
+  seq = 1;
   ms = {};   // sin ningún avance: el usuario es quien los ingresa
 }
 seed();
@@ -704,7 +699,7 @@ function renderProject(){
 
   h += notesPanel([
     ['Alerta de pendientes','Se calcula en vivo: <code>items de todas las quotes del proyecto − items asignados a algún scope</code>. Nunca se persiste. Desaparece sola al llegar a cero. <b>Review</b> abre el selector prefiltrado a los pendientes, sin pantalla adicional.'],
-    ['Inicio vacío','Milestones ya no carga items automáticamente. Un proyecto sin scopes abre vacío. Las quotes no se modifican nunca.'],
+    ['Inicio vacío','<b>La vista arranca sin scopes.</b> Milestones ya no carga items automáticamente: es el Project Manager quien decide qué llevar al seguimiento. Un proyecto nuevo abre con la alerta de pendientes y el botón Create scope, nada más. Las quotes no se modifican nunca.'],
     ['Type of Scope','Propiedad del <b>scope</b> de Milestones, no del item de la quote. Viene del catálogo de Settings › Quotes › Product Types — edítalo allí y estas opciones cambian. No se repite en las filas hijas.'],
     ['Progreso','Item: <code>Σ(% × peso_fase) ÷ Σ(pesos)</code>. Scope: promedio de sus items <b>ponderado por precio</b>, y sobre esa fila consolidada se aplica de nuevo el peso de fase. Ambas fórmulas verificadas contra los mockups de julio.'],
     ['Scope recién creado','Aparece <b>recogido</b>: sólo la fila consolidada, como un group de Excel. El detalle se despliega con el chevron o con <i>Expand all</i>. Se conserva el formato actual de la vista: <b>todo item que se importa a Milestones llega sin ningún avance</b>, siempre y sin excepción — la celda muestra <code>+</code> hasta que el usuario la diligencia. No hay precarga, ni parcial ni total, ni en el scope ni en sus items. El avance siempre lo diligencia el usuario. Una celda de scope sólo muestra porcentaje cuando al menos uno de sus items ya reportó esa fase; mientras tanto es <code>+</code>, no <code>0%</code>. Igual la columna Progress: <code>—</code> hasta el primer reporte.'],
@@ -1212,15 +1207,11 @@ document.querySelectorAll('#projTabs button').forEach(b=>b.onclick=()=>{
 });
 
 const tN=document.getElementById('tNotes'), tC=document.getElementById('tCell'),
-      tR=document.getElementById('tReset'), tE=document.getElementById('tEmpty');
-function syncToggles(){
-  tE.classList.toggle('on',showEmpty);
-  tE.textContent = showEmpty ? 'Volver a datos' : 'Ver estado vacío';
-}
+      tR=document.getElementById('tReset');
+function syncToggles(){}   /* el estado vacío ya es el arranque por defecto */
 tN.onclick=()=>{ document.body.classList.toggle('notes'); tN.classList.toggle('on'); };
 tC.onclick=()=>{ cellMode = cellMode==='pct'?'date':'pct'; tC.textContent='Celda: '+(cellMode==='pct'?'%':'fecha'); renderProject(); };
-tR.onclick=()=>{ seed(); showEmpty=false; syncToggles(); go(vS.hidden?'proj':'set'); toast('Data reset · every cell back to +'); };
-tE.onclick=()=>{ showEmpty=!showEmpty; syncToggles(); go('proj'); };
+tR.onclick=()=>{ seed(); showEmpty=false; syncToggles(); go(vS.hidden?'proj':'set'); toast('Data reset · no scopes, every cell back to +'); };
 
 syncToggles();
 go('proj');
